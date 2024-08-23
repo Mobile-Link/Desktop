@@ -5,5 +5,13 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="MobileLink_Desktop.MainWindow"
         Title="MobileLink_Desktop">
-    <Button Click="Call_WS">Call</Button>
+    <StackPanel>
+        <TextBlock Text="Message" />
+        <TextBox x:Name="MessageTextBox" />
+
+        <Button Content="Enviar" Click="SendButtonClick" />
+
+        <TextBlock Text="Mensagens recebidas: " />
+        <ListBox x:Name="MessageListBox" />
+    </StackPanel>
 </Window>

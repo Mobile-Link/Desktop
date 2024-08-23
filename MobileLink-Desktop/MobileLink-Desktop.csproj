@@ -17,6 +17,7 @@
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.5"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0-preview.7.24406.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
     </ItemGroup>

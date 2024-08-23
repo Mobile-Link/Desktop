@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 
 
@@ -12,19 +13,33 @@ namespace MobileLink_Desktop;
 
 public partial class MainWindow : Window
 {
-    private ClientWebSocket ws; 
+    
+    private HubConnection _connection; 
     public MainWindow()
     {
-        ws = new ClientWebSocket();
         InitializeComponent();
+        InitiateConnection();
+    }
+
+    private void InitiateConnection()
+    {
+        _connection = new HubConnectionBuilder()
+            .WithUrl("http://localhost:5000/chatHub")
+            .Build();
+        _connection.StartAsync().Wait();
+
+        _connection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            MessageListBox.Items.Add($"{user}: {message}");
+        });
     }
 
     // https://gist.github.com/anonymous/574133a15f7faf39fdb5
-    private void Call_WS(object? sender, RoutedEventArgs e)
+    private void SendButtonClick(object? sender, RoutedEventArgs e)
     {
-        ws.ConnectAsync(new Uri("ws://localhost:3000"), CancellationToken.None).ContinueWith((som) =>//doesnt seem to connect
+        _connection.SendAsync("SendMessage", "Client", MessageTextBox.Text).ContinueWith((asd) =>
         {
-            return;
+            MessageTextBox.Text = "";
         });
     }
 }
