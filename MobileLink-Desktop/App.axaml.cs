@@ -19,7 +19,8 @@ public partial class App : Application
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
         //debug purposes
-        // TrayIcon_OnClicked(new object(), EventArgs.Empty);
+        TrayIcon_OnClicked(new object(), EventArgs.Empty);
+        //This is a test of the integration with youtrack
     }
     
     private void TrayIcon_OnClicked(object? sender, EventArgs e)
