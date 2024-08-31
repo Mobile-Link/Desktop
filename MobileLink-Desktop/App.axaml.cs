@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop;
 
@@ -18,8 +19,11 @@ public partial class App : Application
         {
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
-        //debug purposes
-        // TrayIcon_OnClicked(new object(), EventArgs.Empty);
+        _ = ServerConnection.GetInstance().ContinueWith((_) =>
+        {
+            //debug purposes
+            TrayIcon_OnClicked(new object(), EventArgs.Empty);
+        });
     }
     
     private void TrayIcon_OnClicked(object? sender, EventArgs e)
