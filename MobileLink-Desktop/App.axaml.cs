@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop;
@@ -22,12 +23,16 @@ public partial class App : Application
         _ = ServerConnection.GetInstance().ContinueWith((_) =>
         {
             //debug purposes
-            TrayIcon_OnClicked(new object(), EventArgs.Empty);
+            Dispatcher.UIThread.Post(() =>
+            {
+                ShowMainWindow(new object(), EventArgs.Empty);
+            }, DispatcherPriority.Background);
         });
     }
     
-    private void TrayIcon_OnClicked(object? sender, EventArgs e)
+    private void ShowMainWindow(object? sender, EventArgs e)
     {
+        Console.WriteLine("Going to instantiate");
         _mainWindow = new MainWindow();
         _mainWindow.Show();
     }

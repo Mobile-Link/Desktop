@@ -13,16 +13,28 @@ using Newtonsoft.Json;
 // https://learn.microsoft.com/en-us/uwp/api/windows.networking.sockets.streamwebsocket?view=winrt-26100
 namespace MobileLink_Desktop;
 
-public partial class MainWindow : Window
+public partial class MainWindow : MainLayout
 {
-    private ServerConnection _connection;
-    // private 
+    private SocketMethods? _socketMethods;
+    
+    private SocketMethods SocketMethodsValidated
+    {
+        get
+        {
+            if (_socketMethods == null)
+            {
+                throw new Exception("Connection not established");
+            }
+            return _socketMethods;
+        }
+    }
     public MainWindow()
     {
+        Console.WriteLine("Im being instantiated");
         InitializeComponent();
         ServerConnection.GetInstance().ContinueWith((Task<ServerConnection> conTask) =>
         {
-            _connection = conTask.Result;
+            _socketMethods = new SocketMethods(conTask.Result);
         });
         DataContext = new MainWindowViewModel();
     }
@@ -39,6 +51,6 @@ public partial class MainWindow : Window
     private void SendMessage(object? sender, RoutedEventArgs e)
     {
         var message = GetDataContext().Message;
-        _connection.SendMessage(message);
+        SocketMethodsValidated.SendMessage(message);
     }
 }

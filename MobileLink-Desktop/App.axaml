@@ -11,7 +11,7 @@
             <TrayIcon 
                 Icon="/Assets/image.png" 
                 ToolTipText="MobileLink"
-                Clicked="TrayIcon_OnClicked"          
+                Clicked="ShowMainWindow"          
             >
             </TrayIcon>
         </TrayIcons>

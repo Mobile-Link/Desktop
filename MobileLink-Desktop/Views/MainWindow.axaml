@@ -1,14 +1,13 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:MobileLink_Desktop.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="MobileLink_Desktop.MainWindow"
-        x:DataType="viewModels:MainWindowViewModel"
-        Title="MobileLink_Desktop">
-    <Grid>
-        <TextBox Text="{Binding Message}"/>
-        <Button Click="SendMessage">Send</Button>
-    </Grid>
-</Window>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:MobileLink_Desktop.ViewModels"
+             xmlns:mobileLinkDesktop="clr-namespace:MobileLink_Desktop"
+             x:Class="MobileLink_Desktop.MainWindow"
+             x:DataType="viewModels:MainWindowViewModel">
+    <mobileLinkDesktop:MainLayout.Content>
+        <Grid>
+            <TextBox Text="{Binding Message}" />
+            <Button Click="SendMessage">Send</Button>
+        </Grid>
+    </mobileLinkDesktop:MainLayout.Content>
+</UserControl>

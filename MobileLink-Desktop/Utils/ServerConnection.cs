@@ -1,37 +1,49 @@
 using System;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
+using MobileLink_Desktop.Interfaces;
 
 namespace MobileLink_Desktop.Utils;
 
 public class ServerConnection
 {
-    private HubConnection connection;
+    public HubConnection Connection { get; private set; }
+    public ServerconnectionStatus Status = ServerconnectionStatus.Disconnected;
 
-    private static ServerConnection? instance;
+    private static ServerConnection? _instance;
+
 
     private ServerConnection(HubConnection con)
     {
-        connection = con;
+        Connection = con;
         HubListener();
     }
 
     public static async Task<ServerConnection> GetInstance()
     {
-        if (instance == null)
+        if (_instance != null)
+        {
+            return _instance;
+        }
+        try
         {
             var con = await Connect();
-            instance = new ServerConnection(con);
+            _instance = new ServerConnection(con)
+            {
+                Status = ServerconnectionStatus.Connected
+            };
+            return _instance;
         }
-        return instance;
+        catch
+        {
+            throw new Exception("Error while trying to connect");
+        }
     }
+
     private static async Task<HubConnection> Connect()
     {
         Console.WriteLine("Connecting...");
-        HubConnection connection = new HubConnectionBuilder()
+        var connection = new HubConnectionBuilder()
             .WithUrl("http://localhost:5000/chatHub")
             .Build();
         await connection.StartAsync();
@@ -40,26 +52,35 @@ public class ServerConnection
 
     private void HubListener()
     {
-        connection.On<string, string>("ReceiveMessage", (userId, message) =>
+        Connection.Closed += async (_) =>
         {
-            Console.WriteLine($"Received {userId}: {message}");
-        });
+            Status = ServerconnectionStatus.Connecting;
+            await RetryConnection();
+        };
+        Connection.On<string, string>("ReceiveMessage",
+            (userId, message) => { Console.WriteLine($"Received {userId}: {message}"); });
     }
-    
-    public Task SendMessage(string message)
+
+    private async Task RetryConnection()
     {
-        Console.WriteLine("Sending message");
-        // connection.
-        return connection.SendAsync("SendMessage", "1", message);
+        var instance = await GetInstance();
+        var retries = 3;
+        while (retries > 0)
+        {
+            try
+            {
+                var con = await Connect();
+                instance.Connection = con;
+                instance.Status = ServerconnectionStatus.Connected;
+                HubListener();
+                break;
+            }
+            catch
+            {
+                retries--;
+            }
+        }
+
+        instance.Status = ServerconnectionStatus.CantConnect;
     }
-    public Task SendFile(byte[] chunk)
-    {
-        Console.WriteLine("Sending file");
-        // connection.
-        return connection.SendAsync("SendFile", new {
-            userId= 1,
-            chunk
-        });
-    }
-    
 }
