@@ -44,6 +44,7 @@ public class SocketMethods
         return ServerConnectionValidated.SendAsync(
             "SendFile",
             1,
+            "testo",
             chunk
         );
     }

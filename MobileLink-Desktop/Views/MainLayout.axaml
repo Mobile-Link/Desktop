@@ -5,7 +5,4 @@
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="720"
         x:Class="MobileLink_Desktop.MainLayout"
         Title="MobileLink">
-    <Panel DragDrop.AllowDrop="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <ContentControl IsVisible="False" x:Name="MainContent"></ContentControl>
-    </Panel>
 </Window>

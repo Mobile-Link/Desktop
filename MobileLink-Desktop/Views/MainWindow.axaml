@@ -7,7 +7,7 @@
     <mobileLinkDesktop:MainLayout.Content>
         <Grid>
             <TextBox Text="{Binding Message}" />
-            <Button Click="SendMessage">Send</Button>
+            <Button Click="SendFile">Send</Button>
         </Grid>
     </mobileLinkDesktop:MainLayout.Content>
 </UserControl>

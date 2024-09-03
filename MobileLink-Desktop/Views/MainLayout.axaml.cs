@@ -1,13 +1,17 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels;
 using Newtonsoft.Json;
@@ -18,25 +22,12 @@ namespace MobileLink_Desktop;
 
 public partial class MainLayout : Window
 {
-    // private 
-    public MainLayout()
+    protected MainLayout()
     {
         InitializeComponent();
-        AddHandler( DragDrop.DropEvent, OnDrop);
+        
     }
+
+    //TODO implement drag n drop file
     
-    public new object? Content
-    {
-        get => MainContent.Content;
-        set => MainContent.Content = value;
-    }
-    
-    private static void OnDrop( object? sender, DragEventArgs e )
-    {
-        var items = e.Data.GetFiles(); 
-        if ( items != null )
-        {
-            Trace.WriteLine( $"Dropped {items.FirstOrDefault()}" );
-        }
-    }
 }

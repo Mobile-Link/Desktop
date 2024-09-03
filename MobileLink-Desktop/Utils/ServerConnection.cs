@@ -42,9 +42,8 @@ public class ServerConnection
 
     private static async Task<HubConnection> Connect()
     {
-        Console.WriteLine("Connecting...");
         var connection = new HubConnectionBuilder()
-            .WithUrl("http://localhost:5000/chatHub")
+            .WithUrl("http://localhost:5000/filetransferhub")
             .Build();
         await connection.StartAsync();
         return connection;
@@ -56,6 +55,7 @@ public class ServerConnection
         {
             Status = ServerconnectionStatus.Connecting;
             await RetryConnection();
+            //TODO check if this works
         };
         Connection.On<string, string>("ReceiveMessage",
             (userId, message) => { Console.WriteLine($"Received {userId}: {message}"); });

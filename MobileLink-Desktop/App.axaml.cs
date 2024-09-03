@@ -32,7 +32,6 @@ public partial class App : Application
     
     private void ShowMainWindow(object? sender, EventArgs e)
     {
-        Console.WriteLine("Going to instantiate");
         _mainWindow = new MainWindow();
         _mainWindow.Show();
     }
