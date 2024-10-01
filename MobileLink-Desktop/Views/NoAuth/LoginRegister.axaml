@@ -16,6 +16,13 @@
                 <ColumnDefinition Width="{Binding WidthRegister}"></ColumnDefinition>
                 <ColumnDefinition Width="{Binding WidthLogin}"></ColumnDefinition>
             </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <viewNoAuth:Register IsVisible="{Binding RegisterSelected}"></viewNoAuth:Register>
+                <templates:PanelLoginRegisterToggle
+                    Command="{Binding ToggleSelector}"
+                    IsVisible="{Binding !RegisterSelected}">
+                </templates:PanelLoginRegisterToggle>
+            </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <viewNoAuth:Login IsVisible="{Binding !RegisterSelected}"></viewNoAuth:Login>
                 <templates:PanelLoginRegisterToggle
@@ -23,16 +30,7 @@
                     Description="Acesse sua conta agora mesmo"
                     ButtonText="Entrar"
                     Command="{Binding ToggleSelector}"
-                    IsVisible="{Binding RegisterSelected}"
-                >
-                </templates:PanelLoginRegisterToggle>
-            </StackPanel>
-            <StackPanel Grid.Row="0" Grid.Column="0">
-                <viewNoAuth:Register IsVisible="{Binding RegisterSelected}"></viewNoAuth:Register>
-                <templates:PanelLoginRegisterToggle
-                    Command="{Binding ToggleSelector}"
-                    IsVisible="{Binding !RegisterSelected}"
-                >
+                    IsVisible="{Binding RegisterSelected}">
                 </templates:PanelLoginRegisterToggle>
             </StackPanel>
         </Grid>
