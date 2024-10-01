@@ -5,13 +5,20 @@
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="Templates/PanelLoginRegisterToggle.axaml"></StyleInclude>
     </Application.Styles>
+    <Application.Resources>
+        <!--Define keys and values to get from anywhere
+            <SolidColorBrush x:Key="SomeKey">#123</SolidColorBrush>
+        -->
+        <!--To call: {DynamicResource SomeKey}-->
+    </Application.Resources>
     <TrayIcon.Icons>
         <TrayIcons>
             <TrayIcon 
                 Icon="/Assets/image.png" 
                 ToolTipText="MobileLink"
-                Clicked="ShowMainWindow"          
+                Clicked="OpenWindow"          
             >
             </TrayIcon>
         </TrayIcons>

@@ -28,13 +28,34 @@
         <DependentUpon>App.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\MainWindow.axaml.cs">
-        <DependentUpon>MainWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-      <Compile Update="Views\MainLayout.axaml.cs">
+      <Compile Update="Views\Auth\AuthLayout.axaml.cs">
         <DependentUpon>MainLayout.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\NoAuth\Login.axaml.cs">
+        <DependentUpon>Login.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\NoAuth\LoginRegister.axaml.cs">
+        <DependentUpon>Login-Register.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\NoAuth\NoAuthLayout.axaml.cs">
+        <DependentUpon>MainLayout.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Auth\AuthTest.axaml.cs">
+        <DependentUpon>Login-Register.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\NoAuth\Register.axaml.cs">
+        <DependentUpon>Register.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\LogIn\Register.axaml" />
     </ItemGroup>
 </Project>

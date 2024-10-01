@@ -20,14 +20,10 @@ using Newtonsoft.Json;
 // https://learn.microsoft.com/en-us/uwp/api/windows.networking.sockets.streamwebsocket?view=winrt-26100
 namespace MobileLink_Desktop;
 
-public partial class MainLayout : Window
+public partial class AuthLayout : Window
 {
-    protected MainLayout()
+    protected AuthLayout()
     {
         InitializeComponent();
-        
     }
-
-    //TODO implement drag n drop file
-    
 }

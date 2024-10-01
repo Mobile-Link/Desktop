@@ -1,0 +1,8 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:auth="clr-namespace:MobileLink_Desktop.Views.Auth"
+             x:Class="MobileLink_Desktop.Views.Auth.AuthTest">
+    <auth:AuthTest.Content>
+        <TextBox Text="Voce está autenticado"></TextBox>
+    </auth:AuthTest.Content>
+</UserControl>

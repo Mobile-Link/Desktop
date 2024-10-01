@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewNoAuth="clr-namespace:MobileLink_Desktop.Views.NoAuth"
+             xmlns:vmNoAuth="clr-namespace:MobileLink_Desktop.ViewModels.NoAuth"
+             xmlns:templates="clr-namespace:MobileLink_Desktop.Templates"
+             x:Class="MobileLink_Desktop.Views.NoAuth.LoginRegister"
+             x:DataType="vmNoAuth:LoginRegisterViewModel">
+    <Design.DataContext>
+        <vmNoAuth:LoginRegisterViewModel />
+    </Design.DataContext>
+    <viewNoAuth:NoAuthLayout.Content>
+        <Grid ShowGridLines="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding WidthRegister}"></ColumnDefinition>
+                <ColumnDefinition Width="{Binding WidthLogin}"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <viewNoAuth:Login IsVisible="{Binding !RegisterSelected}"></viewNoAuth:Login>
+                <templates:PanelLoginRegisterToggle
+                    Title="Bem-Vindo"
+                    Description="Acesse sua conta agora mesmo"
+                    ButtonText="Entrar"
+                    Command="{Binding ToggleSelector}"
+                    IsVisible="{Binding RegisterSelected}"
+                >
+                </templates:PanelLoginRegisterToggle>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <viewNoAuth:Register IsVisible="{Binding RegisterSelected}"></viewNoAuth:Register>
+                <templates:PanelLoginRegisterToggle
+                    Command="{Binding ToggleSelector}"
+                    IsVisible="{Binding !RegisterSelected}"
+                >
+                </templates:PanelLoginRegisterToggle>
+            </StackPanel>
+        </Grid>
+    </viewNoAuth:NoAuthLayout.Content>
+</UserControl>

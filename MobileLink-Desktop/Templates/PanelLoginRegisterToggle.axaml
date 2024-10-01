@@ -1,0 +1,24 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:MobileLink_Desktop.Templates"
+        xmlns:templates="clr-namespace:MobileLink_Desktop.Templates"
+        x:DataType="templates:PanelLoginRegisterToggle"
+>
+    <Design.PreviewWith>
+        <StackPanel>
+            <controls:PanelLoginRegisterToggle/>
+        </StackPanel>
+    </Design.PreviewWith>
+
+    <Style Selector="controls|PanelLoginRegisterToggle">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel>
+                    <Label Content="{TemplateBinding Title}"/>
+                    <Label Content="{TemplateBinding Description}"/>
+                    <Button Command="{TemplateBinding Command}" Content="{TemplateBinding ButtonText}"></Button>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
