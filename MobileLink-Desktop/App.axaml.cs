@@ -35,7 +35,7 @@ public partial class App : Application
     private void VerifyLogIn(bool openWindow)//change name
     {
         var loggedIn = false;
-        var openWindowOnStartup = false;//temp
+        var openWindowOnStartup = false;//TODO add this to localstorage 
         
         if (!loggedIn)
         {

@@ -1,7 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="MobileLink_Desktop.Views.NoAuth.Register">
-    <StackPanel>
-        <TextBlock Text="Register"></TextBlock>
+    <StackPanel 
+        VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch"
+    >
+        <TextBlock Text="Register" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+        <!-- TODO Not centering -->
     </StackPanel>
 </UserControl>
