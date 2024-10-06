@@ -17,7 +17,45 @@
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.5"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.5"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0-preview.7.24406.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <Compile Update="App.axaml.cs">
+        <DependentUpon>App.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Auth\AuthLayout.axaml.cs">
+        <DependentUpon>MainLayout.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\NoAuth\Login.axaml.cs">
+        <DependentUpon>Login.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\NoAuth\LoginRegister.axaml.cs">
+        <DependentUpon>Login-Register.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\NoAuth\NoAuthLayout.axaml.cs">
+        <DependentUpon>MainLayout.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Auth\AuthTest.axaml.cs">
+        <DependentUpon>Login-Register.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\NoAuth\Register.axaml.cs">
+        <DependentUpon>Register.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\LogIn\Register.axaml" />
     </ItemGroup>
 </Project>
