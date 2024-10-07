@@ -8,7 +8,7 @@ namespace MobileLink_Desktop.Utils;
 public class ServerConnection
 {
     public HubConnection Connection { get; private set; }
-    public ServerconnectionStatus Status = ServerconnectionStatus.Disconnected;
+    public EnServerconnectionStatusType StatusType = EnServerconnectionStatusType.Disconnected;
 
     private static ServerConnection? _instance;
 
@@ -30,7 +30,7 @@ public class ServerConnection
             var con = await Connect();
             _instance = new ServerConnection(con)
             {
-                Status = ServerconnectionStatus.Connected
+                StatusType = EnServerconnectionStatusType.Connected
             };
             return _instance;
         }
@@ -53,7 +53,7 @@ public class ServerConnection
     {
         Connection.Closed += async (_) =>
         {
-            Status = ServerconnectionStatus.Connecting;
+            StatusType = EnServerconnectionStatusType.Connecting;
             await RetryConnection();
             //TODO check if this works
         };
@@ -71,7 +71,7 @@ public class ServerConnection
             {
                 var con = await Connect();
                 instance.Connection = con;
-                instance.Status = ServerconnectionStatus.Connected;
+                instance.StatusType = EnServerconnectionStatusType.Connected;
                 HubListener();
                 break;
             }
@@ -81,6 +81,6 @@ public class ServerConnection
             }
         }
 
-        instance.Status = ServerconnectionStatus.CantConnect;
+        instance.StatusType = EnServerconnectionStatusType.CantConnect;
     }
 }

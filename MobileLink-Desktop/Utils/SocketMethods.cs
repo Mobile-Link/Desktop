@@ -9,13 +9,13 @@ namespace MobileLink_Desktop.Utils;
 public class SocketMethods
 {
     private readonly HubConnection _serverConnection;
-    private readonly ServerconnectionStatus _serverStatus;
+    private readonly EnServerconnectionStatusType _serverStatusType;
 
     private HubConnection ServerConnectionValidated
     {
         get
         {
-            if (_serverStatus != ServerconnectionStatus.Connected)
+            if (_serverStatusType != EnServerconnectionStatusType.Connected)
             {
                 throw new Exception("Connection not established");
             }
@@ -28,7 +28,7 @@ public class SocketMethods
         ServerConnection con
     )
     {
-        _serverStatus = con.Status;
+        _serverStatusType = con.StatusType;
         _serverConnection = con.Connection;
     }
     
