@@ -1,6 +1,6 @@
 namespace MobileLink_Desktop.Interfaces;
 
-public enum ServerconnectionStatus
+public enum EnServerconnectionStatusType
 {
     Connected,
     Disconnected,
