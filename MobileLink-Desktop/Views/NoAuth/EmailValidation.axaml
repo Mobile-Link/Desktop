@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vmNoAuth="clr-namespace:MobileLink_Desktop.ViewModels.NoAuth"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MobileLink_Desktop.Views.NoAuth.EmailValidation"
+             x:DataType="vmNoAuth:EmailValidationViewModel">
+    <StackPanel
+        VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch">
+        <Button Command="{Binding Voltar}" Content="Voltar"/>
+        <TextBlock Text="Código de Verificação" TextAlignment="Center"/>
+        <TextBlock Text="Verifique seu email para colocar o código de verificação correto " TextAlignment="Center"/>
+        <TextBox Text="{Binding Code}" />
+        <Button Command="{Binding SubmitVerificationCode}" Content="Validar"/>
+    </StackPanel>
+</UserControl>

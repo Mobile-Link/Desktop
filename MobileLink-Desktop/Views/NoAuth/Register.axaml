@@ -10,7 +10,8 @@
     >
         <!-- TODO Not centering -->
         <TextBlock Text="Crie sua conta" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+        <TextBlock Text="Email" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
         <TextBox Text="{Binding Email}"></TextBox>
-        <!-- TODO Call validate -->
+        <Button Command="{Binding SubmitValidateEmail}" Content="Validar email"></Button>
     </StackPanel>
 </UserControl>

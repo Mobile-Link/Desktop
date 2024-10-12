@@ -1,16 +1,14 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Avalonia.Threading;
+using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Utils;
+using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class RegisterViewModel: INotifyPropertyChanged
+public class RegisterViewModel(ServerAPI api, NavigationService navigationService) : INotifyPropertyChanged
 {
-    private ServerAPI _api;
-    public RegisterViewModel(ServerAPI api)
-    {
-        _api = api;
-    }
     private string _email = string.Empty;
 
     public string Email
@@ -24,9 +22,12 @@ public class RegisterViewModel: INotifyPropertyChanged
     }
     public async Task SubmitValidateEmail()
     {
-        _api.SendCode(_email).ContinueWith((sendTask) =>
+        api.SendCode(_email).ContinueWith((sendTask) =>
         {
-            //TODO send to code verification stack
+            Dispatcher.UIThread.Post(() =>
+            {
+                navigationService.NavigateTo<EmailValidationViewModel>(new EmailValidation());
+            }, DispatcherPriority.Background);
         });
 
     }

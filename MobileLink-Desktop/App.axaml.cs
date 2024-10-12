@@ -6,6 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.Views.Auth;
@@ -17,15 +18,19 @@ public partial class App : Application
 {
     private Window? _mainWindow;
     public static IServiceProvider AppServiceProvider { get; private set; }
-    private SocketConnection _socketConnection;
+    private readonly NavigationService _navigationService;
 
-    public override void OnFrameworkInitializationCompleted()
+    public App()
     {
         var collection = new ServiceCollection();
         collection.AddCommonServices();
         AppServiceProvider = collection.BuildServiceProvider();
-        _socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
-        _socketConnection.Connect();
+        var socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
+        _navigationService = AppServiceProvider.GetRequiredService<NavigationService>();
+        socketConnection.Connect();
+    }
+    public override void OnFrameworkInitializationCompleted()
+    {
         VerifyLogIn(false);
         base.OnFrameworkInitializationCompleted();
     }
@@ -37,26 +42,23 @@ public partial class App : Application
         {
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
-        
     }
-    
-    private void VerifyLogIn(bool openWindow)//change name
+
+    private void VerifyLogIn(bool openWindow) //change name
     {
         const bool loggedIn = false;
         const bool openWindowOnStartup = false; //TODO add this to localstorage 
-        
+
         if (!loggedIn)
         {
             var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
-            ChangeWindow(new LoginRegister
-            {
-                DataContext = vm
-            });
+            ChangeWindow<LoginRegisterViewModel>(new NoAuthLayout(), new LoginRegister());
             return;
         }
+
         if (openWindowOnStartup || openWindow)
         {
-            ChangeWindow(new AuthTest{});
+            ChangeWindow<RegisterViewModel>(new AuthLayout(), new UserControl());
         }
     }
 
@@ -65,13 +67,16 @@ public partial class App : Application
         VerifyLogIn(true);
     }
 
-    private void ChangeWindow(Window window)
+    private void ChangeWindow<TViewModel>(Window window, UserControl content) where TViewModel : class
     {
         if (_mainWindow != null)
         {
             _mainWindow.Close();
         }
+
         _mainWindow = window;
+        _navigationService.Initialize(_mainWindow);
+        _navigationService.NavigateToRoot<TViewModel>(content);
         _mainWindow.Show();
     }
 }

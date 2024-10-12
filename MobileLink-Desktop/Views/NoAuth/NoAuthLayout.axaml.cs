@@ -5,7 +5,7 @@ namespace MobileLink_Desktop.Views.NoAuth;
 
 public partial class NoAuthLayout : Window
 {
-    protected NoAuthLayout()
+    public NoAuthLayout()
     {
         InitializeComponent();
     }
