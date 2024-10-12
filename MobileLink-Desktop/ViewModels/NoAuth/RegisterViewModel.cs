@@ -1,20 +1,34 @@
 using System.ComponentModel;
+using System.Threading.Tasks;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
 public class RegisterViewModel: INotifyPropertyChanged
 {
-    private SocketConnection _connection;
-    public RegisterViewModel(SocketConnection connection)
+    private ServerAPI _api;
+    public RegisterViewModel(ServerAPI api)
     {
-        _connection = connection;
-   
+        _api = api;
     }
+    private string _email = string.Empty;
 
-    public void RegisterTest()
+    public string Email
     {
-        
+        get => _email;
+        set
+        {
+            _email = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Email)); 
+        }
+    }
+    public async Task SubmitValidateEmail()
+    {
+        _api.SendCode(_email).ContinueWith((sendTask) =>
+        {
+            //TODO send to code verification stack
+        });
+
     }
     
     public event PropertyChangedEventHandler? PropertyChanged;

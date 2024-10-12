@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
     public static void AddCommonServices(this IServiceCollection collection)
     {
         collection.AddSingleton<SocketConnection>();
-        collection.AddScoped<Server>();
+        collection.AddScoped<ServerAPI>();
 
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<RegisterViewModel>();
