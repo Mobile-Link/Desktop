@@ -10,7 +10,4 @@ public partial class Login : UserControl
     {
         AvaloniaXamlLoader.Load(this);
     }
-    
-    
-    
 }

@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Microsoft.Extensions.DependencyInjection;
+using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
 public class LoginRegisterViewModel : INotifyPropertyChanged
 {
+    public UserControl LoginControl { get; } = new Login(){ DataContext = App.AppServiceProvider.GetRequiredService<LoginViewModel>()};
+    public UserControl RegisterControl { get; } = new Register(){ DataContext = App.AppServiceProvider.GetRequiredService<RegisterViewModel>()};
+    
+    
     private GridLength _widthLogin = new GridLength(3, GridUnitType.Star);
     private bool _registerSelected = false;
     private GridLength _widthRegister = new GridLength(2, GridUnitType.Star);

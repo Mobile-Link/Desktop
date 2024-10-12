@@ -25,7 +25,7 @@ public class SocketMethods
     }
     
     public SocketMethods(
-        ServerConnection con
+        SocketConnection con
     )
     {
         _serverStatusType = con.StatusType;

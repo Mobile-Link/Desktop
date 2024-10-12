@@ -1,7 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="MobileLink_Desktop.Views.NoAuth.Login">
+             xmlns:vmNoAuth="clr-namespace:MobileLink_Desktop.ViewModels.NoAuth"
+             x:Class="MobileLink_Desktop.Views.NoAuth.Login"
+             x:DataType="vmNoAuth:LoginViewModel"
+             >
     <StackPanel>
         <TextBlock Text="Login"></TextBlock>
+        <Button Command="{Binding LogInTest}">Entrar</Button>
     </StackPanel>
 </UserControl>

@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.Views.Auth;
@@ -15,7 +16,20 @@ namespace MobileLink_Desktop;
 public partial class App : Application
 {
     private Window? _mainWindow;
-    
+    public static IServiceProvider AppServiceProvider { get; private set; }
+    private SocketConnection _socketConnection;
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        var collection = new ServiceCollection();
+        collection.AddCommonServices();
+        AppServiceProvider = collection.BuildServiceProvider();
+        _socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
+        _socketConnection.Connect();
+        VerifyLogIn(false);
+        base.OnFrameworkInitializationCompleted();
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -23,32 +37,26 @@ public partial class App : Application
         {
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
-        _ = ServerConnection.GetInstance().ContinueWith((_) =>
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                VerifyLogIn(false);
-            }, DispatcherPriority.Background);
-        });
+        
     }
     
     private void VerifyLogIn(bool openWindow)//change name
     {
-        var loggedIn = false;
-        var openWindowOnStartup = false;//TODO add this to localstorage 
+        const bool loggedIn = false;
+        const bool openWindowOnStartup = false; //TODO add this to localstorage 
         
         if (!loggedIn)
         {
-            ChangeWindow(new LoginRegister()
+            var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
+            ChangeWindow(new LoginRegister
             {
-                DataContext = new LoginRegisterViewModel()
+                DataContext = vm
             });
             return;
         }
-
         if (openWindowOnStartup || openWindow)
         {
-            ChangeWindow(new AuthTest());
+            ChangeWindow(new AuthTest{});
         }
     }
 
