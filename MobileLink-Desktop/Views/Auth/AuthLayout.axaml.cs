@@ -22,7 +22,7 @@ namespace MobileLink_Desktop;
 
 public partial class AuthLayout : Window
 {
-    protected AuthLayout()
+    public AuthLayout()
     {
         InitializeComponent();
     }

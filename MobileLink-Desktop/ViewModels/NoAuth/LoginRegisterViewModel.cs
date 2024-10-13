@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Microsoft.Extensions.DependencyInjection;
+using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class LoginRegisterViewModel : INotifyPropertyChanged
+public class LoginRegisterViewModel : BaseViewModel
 {
+    public UserControl LoginControl { get; } = new Login(){ DataContext = App.AppServiceProvider.GetRequiredService<LoginViewModel>()};
+    public UserControl RegisterControl { get; } = new Register(){ DataContext = App.AppServiceProvider.GetRequiredService<RegisterViewModel>()};
+    
+    
     private GridLength _widthLogin = new GridLength(3, GridUnitType.Star);
     private bool _registerSelected = false;
     private GridLength _widthRegister = new GridLength(2, GridUnitType.Star);
@@ -17,7 +23,7 @@ public class LoginRegisterViewModel : INotifyPropertyChanged
         set
         {
             _widthLogin = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WidthLogin)));
+            NotifyPropertyChanged(nameof(WidthLogin));
         }
     }
     public GridLength WidthRegister
@@ -26,7 +32,7 @@ public class LoginRegisterViewModel : INotifyPropertyChanged
         set
         {
             _widthRegister = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WidthRegister)));
+            NotifyPropertyChanged(nameof(WidthRegister));
         }
     }
     public bool RegisterSelected
@@ -35,7 +41,7 @@ public class LoginRegisterViewModel : INotifyPropertyChanged
         set
         {
             _registerSelected = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RegisterSelected)));
+            NotifyPropertyChanged(nameof(RegisterSelected));
         }
     }
     public void ToggleSelector()
@@ -43,6 +49,4 @@ public class LoginRegisterViewModel : INotifyPropertyChanged
         (WidthLogin, WidthRegister) = (WidthRegister, WidthLogin);
         RegisterSelected = !RegisterSelected;
     }
-    
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

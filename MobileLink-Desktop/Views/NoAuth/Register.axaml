@@ -1,11 +1,17 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="MobileLink_Desktop.Views.NoAuth.Register">
+             xmlns:vmNoAuth="clr-namespace:MobileLink_Desktop.ViewModels.NoAuth"
+             x:Class="MobileLink_Desktop.Views.NoAuth.Register"
+             x:DataType="vmNoAuth:RegisterViewModel"
+             >
     <StackPanel 
         VerticalAlignment="Stretch"
         HorizontalAlignment="Stretch"
     >
-        <TextBlock Text="Register" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
         <!-- TODO Not centering -->
+        <TextBlock Text="Crie sua conta" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+        <TextBlock Text="Email" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+        <TextBox Text="{Binding Email}"></TextBox>
+        <Button Command="{Binding SubmitValidateEmail}" Content="Validar email"></Button>
     </StackPanel>
 </UserControl>

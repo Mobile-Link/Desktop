@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace MobileLink_Desktop.Views.NoAuth;
 
-public partial class LoginRegister : UserControl
+public partial class EmailValidation : UserControl
 {
-    public LoginRegister()
+    public EmailValidation()
     {
         InitializeComponent();
     }
