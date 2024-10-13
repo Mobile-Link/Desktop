@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using MobileLink_Desktop.Service;
+using MobileLink_Desktop.Service.ApiServices;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.ViewModels.Auth;
@@ -10,9 +11,13 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection)
     {
-        collection.AddSingleton<SocketConnection>();
         collection.AddSingleton<NavigationService>();
+        
+        collection.AddSingleton<SocketConnection>();
+        collection.AddSingleton<SocketMethods>();
         collection.AddScoped<ServerAPI>();
+        collection.AddSingleton<DeviceService>();
+        collection.AddSingleton<ConnectionService>();
 
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<RegisterViewModel>();

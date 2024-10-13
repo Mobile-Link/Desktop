@@ -6,10 +6,10 @@ using MobileLink_Desktop.Interfaces;
 
 namespace MobileLink_Desktop.Utils;
 
-public class SocketMethods
+public class SocketMethods(SocketConnection con)
 {
-    private readonly HubConnection _serverConnection;
-    private readonly EnServerconnectionStatusType _serverStatusType;
+    private readonly HubConnection _serverConnection = con.Connection;
+    private readonly EnServerconnectionStatusType _serverStatusType = con.StatusType;
 
     private HubConnection ServerConnectionValidated
     {
@@ -23,21 +23,15 @@ public class SocketMethods
             return _serverConnection;
         }
     }
-    
-    public SocketMethods(
-        SocketConnection con
-    )
+
+    public Task StartTransfer(long idDevice, string filePath, long fileSize, string destinationPath)
     {
-        _serverStatusType = con.StatusType;
-        _serverConnection = con.Connection;
+        return ServerConnectionValidated.SendAsync("StartTransference", idDevice, filePath, fileSize, destinationPath);
     }
-    
-    public Task SendMessage(string message)
+    public Task SendPacket(long idTransfer, long startByteIndex, byte[] byteArray)
     {
-        Console.WriteLine("Sending message");
-        return ServerConnectionValidated.SendAsync("SendMessage", "1", message);
+        return ServerConnectionValidated.SendAsync("StartTransference", idTransfer, startByteIndex, byteArray);
     }
-    
     public Task SendFile(byte[] chunk)
     {
         Console.WriteLine("Sending file");

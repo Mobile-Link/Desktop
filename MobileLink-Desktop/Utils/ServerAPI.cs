@@ -7,12 +7,12 @@ namespace MobileLink_Desktop.Utils;
 
 public class ServerAPI
 {
-    private readonly HttpClient _httpClient;
+    public readonly HttpClient HttpClient;
 
     public ServerAPI()
     {
-        _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri("http://localhost:5000");
+        HttpClient = new HttpClient();
+        HttpClient.BaseAddress = new Uri("http://localhost:5000");
     }
 
     public async Task<string> Login(string emailUser, string password)
@@ -26,7 +26,7 @@ public class ServerAPI
                 "password", password
             }
         });
-        var response = await _httpClient.PostAsync("/api/Auth/login", body);
+        var response = await HttpClient.PostAsync("/api/Auth/login", body);
         return await response.Content.ReadAsStringAsync();
     }
     public async Task<string> SendCode(string email)
@@ -37,7 +37,7 @@ public class ServerAPI
                 "email", email
             }
         });
-        var response = await _httpClient.PostAsync("/api/Auth/sendCode", body);
+        var response = await HttpClient.PostAsync("/api/Auth/sendCode", body);
         return await response.Content.ReadAsStringAsync();
     }
     public async Task<string> VerifyCode(string email, string code)
@@ -51,7 +51,7 @@ public class ServerAPI
                 "code", code
             }
         });
-        var response = await _httpClient.PostAsync("/api/Auth/verifyCode", body);
+        var response = await HttpClient.PostAsync("/api/Auth/verifyCode", body);
         return await response.Content.ReadAsStringAsync();
     }
     public async Task<string> Register(string email, string password, string username)
@@ -68,7 +68,8 @@ public class ServerAPI
                 "username", username
             }
         });
-        var response = await _httpClient.PostAsync("/api/Auth/register", body);
+        var response = await HttpClient.PostAsync("/api/Auth/register", body);
         return await response.Content.ReadAsStringAsync();
     }
+
 }

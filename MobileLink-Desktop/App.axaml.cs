@@ -82,4 +82,22 @@ public partial class App : Application
         _navigationService.NavigateToRoot(viewModel, content);
         _mainWindow.Show();
     }
+    public static Window? GetMainWindow()
+    {
+        if (Application.Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            return null;
+        }
+        if (desktopLifetime.MainWindow != null)
+        {
+            return desktopLifetime.MainWindow;
+        }
+
+        if (desktopLifetime.Windows.Count > 0)
+        {
+            return desktopLifetime.Windows[0];
+        }
+
+        return null;
+    }
 }

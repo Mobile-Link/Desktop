@@ -7,8 +7,15 @@
              x:DataType="auth:TransferenceViewModel"
              x:Class="MobileLink_Desktop.Views.Auth.Transference">
     <StackPanel>
-        <TextBlock Text="{Binding StatusTransference}" Margin="0 0 0 10" HorizontalAlignment="Center"/>
+        <TextBlock Text="{Binding ProgressTransference}" Margin="0 0 0 10" HorizontalAlignment="Center"/>
 
+        <ComboBox ItemsSource="{Binding Devices}" SelectedIndex="{Binding SelectedDevice}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
         <Button Content="Selecionar Arquivo"
                 Command="{Binding SelectFile}"
                 HorizontalAlignment="Center" Margin="0 0 0 10"/>

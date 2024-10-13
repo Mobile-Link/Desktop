@@ -1,54 +1,91 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using MobileLink_Desktop.Entities;
+using MobileLink_Desktop.Service.ApiServices;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.ViewModels.Auth;
 
-public class TransferenceViewModel(SocketConnection socketConnection) : BaseViewModel
+public class TransferenceViewModel : BaseViewModel
 {
-    private string _selectedFileName;
-    private string _statusTransference;
-    private bool _canSendFile = false; 
-    
-    private readonly SocketConnection _socketConnection = socketConnection;
+    private IStorageItem? _selectedFile = null;
+    private long? _selectedDevice = null;
+    private int _progressTransference;
+    private ObservableCollection<Device> _devices = [];
+    private bool _canSendFile = false;
 
-    public string SelectedFileName
+    private readonly SocketMethods _socketConnection;
+    private readonly ConnectionService _connectionService;
+    private readonly DeviceService _deviceService;
+
+    public TransferenceViewModel(SocketMethods socketConnection, DeviceService deviceService,
+        ConnectionService connectionService)
     {
-        get => _selectedFileName;
+        _socketConnection = socketConnection;
+        _deviceService = deviceService;
+        _connectionService = connectionService;
+        PopulateDevices();
+    }
+
+    public ObservableCollection<Device> Devices
+    {
+        get => _devices;
         set
         {
-            _selectedFileName = value;
-            CanSendFile = !string.IsNullOrEmpty(value);
+            _devices = value;
+            NotifyPropertyChanged(nameof(Devices));
+        }
+    }
+
+    public IStorageItem? SelectedFileName
+    {
+        get => _selectedFile;
+        set
+        {
+            _selectedFile = value;
+            CanSendFile = value != null;
             NotifyPropertyChanged(nameof(SelectedFileName));
         }
     }
-
-    public string StatusTransference
+    public long? SelectedDevice
     {
-        get => _statusTransference;
+        get => _selectedDevice;
         set
         {
-            _statusTransference = value;
-            NotifyPropertyChanged(nameof(StatusTransference));
+            _selectedDevice = value;
+            NotifyPropertyChanged(nameof(SelectedDevice));
         }
     }
-    
-    public void UpdateStatusTransference(string status)
+    public int ProgressTransference
     {
-        StatusTransference = status;
+        get => _progressTransference;
+        set
+        {
+            _progressTransference = value;
+            NotifyPropertyChanged(nameof(ProgressTransference));
+        }
     }
 
-    public async void SelectFile()
+    public void UpdateStatusTransference(int status)
     {
-        var mainWindow = GetTopLevel();
+        ProgressTransference = status;
+    }
+
+    public void SelectFile()
+    {
+        var mainWindow = App.GetMainWindow();
         var topLevel = TopLevel.GetTopLevel(mainWindow);
         if (topLevel == null)
         {
-            return;//TODO error
+            return; //TODO error
         }
 
         topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
@@ -59,14 +96,25 @@ public class TransferenceViewModel(SocketConnection socketConnection) : BaseView
         {
             if (result.Result.Count > 0)
             {
-                SelectedFileName = result.Result[0].Name;
+                SelectedFileName = result.Result[0];
             }
         });
     }
-    
-    public async void SendFile()
+
+    public void SendFile()
     {
-        
+        if (_selectedFile == null || _selectedDevice == null)
+        {
+            //TODO popup form error
+            return;
+        }
+        var length = new System.IO.FileInfo(_selectedFile.Path.AbsolutePath).Length;
+        _socketConnection.StartTransfer(_selectedDevice ?? 0, _selectedFile.Path.AbsolutePath, length, "/").ContinueWith(
+            (taskStart) =>
+            {
+                var idTransference = 0; //TODO get idTransference or from the socket of http request
+                //TODO separate file into chunks and for each chunk call SendPacket(long idTransfer, long startByteIndex, byte[] byteArray)
+            });
     }
     
     public bool CanSendFile
@@ -78,21 +126,32 @@ public class TransferenceViewModel(SocketConnection socketConnection) : BaseView
             NotifyPropertyChanged(nameof(CanSendFile));
         }
     }
-    
-    private Window? GetTopLevel()
-    {
-        if (Application.Current?.ApplicationLifetime is ClassicDesktopStyleApplicationLifetime desktopLifetime)
-        {
-            if (desktopLifetime.MainWindow != null)
-            {
-                return desktopLifetime.MainWindow;
-            }
-            if(desktopLifetime.Windows.Count > 0)
-            {
-                return desktopLifetime.Windows[0];
-            }
-        }
 
-        return null;
+    private void PopulateDevices()
+    {
+        var userDevices = new List<Device>();
+        var connectedDevices = new List<int>();
+        Devices.Clear();
+        var tasks = new List<Task>
+        {
+            _deviceService.GetUserDevices().ContinueWith((taskUsr) => { userDevices = taskUsr.Result; }),
+            _connectionService.GetConnectedDevices().ContinueWith((taskCon) => { connectedDevices = taskCon.Result; })
+        };
+        Task.WhenAll(tasks.ToArray()).ContinueWith((taskTasks) =>
+        {
+            Devices = new ObservableCollection<Device>(
+                userDevices.Where((device) => connectedDevices.Contains(device.IdDevice)).ToList()
+            );
+            if (Devices.Count == 0)
+            {
+                //temp
+                Devices.Add(new Device()
+                {
+                    Name = "Teste",
+                    IdDevice = 123
+                });
+                //TODO alert no devices
+            }
+        });
     }
 }
