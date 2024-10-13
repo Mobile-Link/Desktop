@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using MobileLink_Desktop.ViewModels;
 
 namespace MobileLink_Desktop.Service;
 
@@ -20,18 +21,17 @@ public class NavigationService
         this._contentControl = contentControl;
     }
 
-    public void NavigateTo<TViewModel>(UserControl TView) where TViewModel : class
+    public void NavigateTo(BaseViewModel viewModel, UserControl tView)
     {
-        var viewModel = serviceProvider.GetRequiredService<TViewModel>();
-        TView.DataContext = viewModel;
-        stackNavigation.Push(TView);
-        _contentControl.Content = TView;
+        tView.DataContext = viewModel;
+        stackNavigation.Push(tView);
+        _contentControl.Content = tView;
     }
 
-    public void NavigateToRoot<TViewModel>(UserControl TView) where TViewModel : class
+    public void NavigateToRoot(BaseViewModel viewModel, UserControl tView)
     {
         stackNavigation.Clear();
-        NavigateTo<TViewModel>(TView);
+        NavigateTo(viewModel, tView);
     }
 
     public void NavigateToBack()

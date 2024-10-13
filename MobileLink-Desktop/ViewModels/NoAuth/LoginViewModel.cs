@@ -5,15 +5,8 @@ using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class LoginViewModel : INotifyPropertyChanged
+public class LoginViewModel(ServerAPI api) : BaseViewModel
 {
-    private ServerAPI _api;
-
-    public LoginViewModel(ServerAPI api)
-    {
-        _api = api;
-    }
-
     private string _emailUser = string.Empty;
 
     public string EmailUser
@@ -22,7 +15,7 @@ public class LoginViewModel : INotifyPropertyChanged
         set
         {
             _emailUser = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(EmailUser)); 
+            NotifyPropertyChanged(EmailUser); 
         }
     }
     private string _password = string.Empty;
@@ -33,14 +26,12 @@ public class LoginViewModel : INotifyPropertyChanged
         set
         {
             _password = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Password)); 
+            NotifyPropertyChanged(Password); 
         }
     }
 
     public async Task SubmitLogin()
     {
-        await _api.Login(_emailUser, _password);
+        await api.Login(_emailUser, _password);
     }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

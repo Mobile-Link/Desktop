@@ -4,7 +4,7 @@ using MobileLink_Desktop.Service;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class EmailValidationViewModel(NavigationService navigationService) : INotifyPropertyChanged
+public class EmailValidationViewModel(NavigationService navigationService) : BaseViewModel
 {
     private string _code = string.Empty;
 
@@ -14,7 +14,7 @@ public class EmailValidationViewModel(NavigationService navigationService) : INo
         set
         {
             _code = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Code)); 
+            NotifyPropertyChanged(Code); 
         }
     }
 
@@ -26,5 +26,4 @@ public class EmailValidationViewModel(NavigationService navigationService) : INo
     {
         navigationService.NavigateToBack();
     }
-    public event PropertyChangedEventHandler? PropertyChanged;
 }

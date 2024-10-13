@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Utils;
+using MobileLink_Desktop.ViewModels;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.Views.Auth;
 using MobileLink_Desktop.Views.NoAuth;
@@ -52,13 +53,14 @@ public partial class App : Application
         if (!loggedIn)
         {
             var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
-            ChangeWindow<LoginRegisterViewModel>(new NoAuthLayout(), new LoginRegister());
+            ChangeWindow(vm, new NoAuthLayout(), new LoginRegister());
             return;
         }
 
         if (openWindowOnStartup || openWindow)
         {
-            ChangeWindow<RegisterViewModel>(new AuthLayout(), new UserControl());
+            var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
+            ChangeWindow(vm, new AuthLayout(), new UserControl());
         }
     }
 
@@ -67,7 +69,7 @@ public partial class App : Application
         VerifyLogIn(true);
     }
 
-    private void ChangeWindow<TViewModel>(Window window, UserControl content) where TViewModel : class
+    private void ChangeWindow(BaseViewModel viewModel, Window window, UserControl content)
     {
         if (_mainWindow != null)
         {
@@ -76,7 +78,7 @@ public partial class App : Application
 
         _mainWindow = window;
         _navigationService.Initialize(_mainWindow);
-        _navigationService.NavigateToRoot<TViewModel>(content);
+        _navigationService.NavigateToRoot(viewModel, content);
         _mainWindow.Show();
     }
 }
