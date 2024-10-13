@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels;
+using MobileLink_Desktop.ViewModels.Auth;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.Views.Auth;
 using MobileLink_Desktop.Views.NoAuth;
@@ -47,8 +48,8 @@ public partial class App : Application
 
     private void VerifyLogIn(bool openWindow) //change name
     {
-        const bool loggedIn = false;
-        const bool openWindowOnStartup = false; //TODO add this to localstorage 
+        const bool loggedIn = true;
+        const bool openWindowOnStartup = true; //TODO add this to localstorage 
 
         if (!loggedIn)
         {
@@ -59,8 +60,8 @@ public partial class App : Application
 
         if (openWindowOnStartup || openWindow)
         {
-            var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
-            ChangeWindow(vm, new AuthLayout(), new UserControl());
+            var vm = AppServiceProvider.GetRequiredService<TransferenceViewModel>();
+            ChangeWindow(vm, new AuthLayout(), new Transference());
         }
     }
 

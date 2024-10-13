@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels.NoAuth;
+using MobileLink_Desktop.ViewModels.Auth;
 
 namespace MobileLink_Desktop;
 
@@ -17,5 +18,6 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<RegisterViewModel>();
         collection.AddTransient<LoginRegisterViewModel>();
         collection.AddTransient<EmailValidationViewModel>();
+        collection.AddTransient<TransferenceViewModel>();
     }
 }
