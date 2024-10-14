@@ -115,7 +115,7 @@ public class TransferenceViewModel : BaseViewModel
             return;
         }
 
-        var transferId = 0;
+        const int idTransfer = 0;
 
         var length = new System.IO.FileInfo(_selectedFile.Path.AbsolutePath).Length;
         _socketMethods.StartTransfer(_selectedDevice ?? 0, _selectedFile.Path.AbsolutePath, length, "/").ContinueWith(
@@ -123,19 +123,23 @@ public class TransferenceViewModel : BaseViewModel
             {
                 using (FileStream fs = File.OpenRead(_selectedFile.Path.AbsolutePath))
                 {
-                    byte[] result = new byte[fs.Length];
-                    fs.Read(result, 0, (int)fs.Length);
-
-                    // var fileChunk = Convert.ToBase64String(result);
-
-                    var fileChunk = result;
-
                     const int chunkSize = 1024 * 1024;
-
-                    for (var i = 0; i < fileChunk.Length; i += chunkSize)
+                    var totalChunks = (int)Math.Ceiling((double)fs.Length / chunkSize);
+                    
+                    var startByteIndex = 0;
+                    var chunkIndex = 0;
+                    
+                    while (startByteIndex < fs.Length)
                     {
-                        _socketMethods.SendPacket(transferId, i, fileChunk.Skip(i).Take(chunkSize).ToArray());
+                        var byteArray = new byte[chunkSize];
+                        fs.Read(byteArray, 0, chunkSize);
+                        _socketMethods.SendPacket(idTransfer, startByteIndex, byteArray).Wait();
+                        startByteIndex += chunkSize;
+                        chunkIndex++;
+                        UpdateStatusTransference((int)Math.Ceiling((double)chunkIndex / totalChunks * 100));
                     }
+                    
+                    _socketMethods.SendPacket(idTransfer, startByteIndex, Array.Empty<byte>()).Wait();
                 }
 
                 var idTransference = 0; //TODO get idTransference or from the socket of http request
