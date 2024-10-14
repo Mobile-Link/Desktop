@@ -21,15 +21,17 @@ public partial class App : Application
     private Window? _mainWindow;
     public static IServiceProvider AppServiceProvider { get; private set; }
     private readonly NavigationService _navigationService;
-
+    private readonly LocalStorage _localStorage;
+    private SocketConnection _socketConnection;
     public App()
     {
         var collection = new ServiceCollection();
         collection.AddCommonServices();
         AppServiceProvider = collection.BuildServiceProvider();
-        var socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
+        _socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
         _navigationService = AppServiceProvider.GetRequiredService<NavigationService>();
-        socketConnection.Connect();
+        _localStorage = AppServiceProvider.GetRequiredService<LocalStorage>();
+
     }
     public override void OnFrameworkInitializationCompleted()
     {
@@ -42,23 +44,22 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            //TODO get from config file
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
     }
 
     private void VerifyLogIn(bool openWindow) //change name
     {
-        const bool loggedIn = true;
-        const bool openWindowOnStartup = true; //TODO add this to localstorage 
-
-        if (!loggedIn)
+        var storageContent = _localStorage.GetStorage();
+        if (storageContent == null || storageContent?.Token == null)
         {
             var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
             ChangeWindow(vm, new NoAuthLayout(), new LoginRegister());
             return;
         }
-
-        if (openWindowOnStartup || openWindow)
+        _socketConnection.Connect();
+        if (storageContent.OpenWindowOnStartUp || openWindow)
         {
             var vm = AppServiceProvider.GetRequiredService<TransferenceViewModel>();
             ChangeWindow(vm, new AuthLayout(), new Transference());

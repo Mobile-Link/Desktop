@@ -8,19 +8,26 @@ namespace MobileLink_Desktop.Utils;
 public class SocketConnection
 {
     public HubConnection Connection { get; private set; }
-
+    private readonly LocalStorage _localStorage;
     public EnServerconnectionStatusType StatusType = EnServerconnectionStatusType.Disconnected;
 
     public SocketConnection(LocalStorage localStorage)
     {
-        var storageContent = localStorage.GetStorage();
+        _localStorage = localStorage;
+        var storageContent = _localStorage.GetStorage();
         Connection = new HubConnectionBuilder()
-            .WithUrl($"http://localhost:5000/connectionhub?deviceId={storageContent?.IdDevice ?? 1234}")//TODO if no storage dont start connection
+            .WithUrl($"http://localhost:5000/connectionhub?deviceId={storageContent?.IdDevice ?? 0}")//TODO if no storage dont start connection
             .Build();
     }
 
     public async Task Connect()
     {
+        var storageContent = _localStorage.GetStorage();
+        if (storageContent?.IdDevice == null)
+        {
+            StatusType = EnServerconnectionStatusType.UnAuthorized;
+            return;
+        }
         Console.WriteLine("Im going to connect");
         await Connection.StartAsync();
         StatusType = EnServerconnectionStatusType.Connected;
