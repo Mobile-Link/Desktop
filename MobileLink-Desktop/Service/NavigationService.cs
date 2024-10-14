@@ -19,17 +19,16 @@ public class NavigationService
         this._contentControl = contentControl;
     }
 
-    public void NavigateTo(BaseViewModel viewModel, UserControl tView)
+    public void NavigateTo(UserControl tView)
     {
-        tView.DataContext = viewModel;
         _stackNavigation.Push(tView);
         _contentControl.Content = tView;
     }
 
-    public void NavigateToRoot(BaseViewModel viewModel, UserControl tView)
+    public void NavigateToRoot(UserControl tView)
     {
         _stackNavigation.Clear();
-        NavigateTo(viewModel, tView);
+        NavigateTo(tView);
     }
 
     public void NavigateToBack()

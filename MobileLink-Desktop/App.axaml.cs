@@ -54,15 +54,13 @@ public partial class App : Application
         var storageContent = _localStorage.GetStorage();
         if (storageContent == null || storageContent?.Token == null)
         {
-            var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
-            ChangeWindow(vm, new NoAuthLayout(), new LoginRegister());
+            ChangeWindow(new NoAuthLayout(), new LoginRegister());
             return;
         }
         _socketConnection.Connect();
         if (storageContent.OpenWindowOnStartUp || openWindow)
         {
-            var vm = AppServiceProvider.GetRequiredService<TransferenceViewModel>();
-            ChangeWindow(vm, new AuthLayout(), new Transference());
+            ChangeWindow(new AuthLayout(), new Transference());
         }
     }
 
@@ -71,7 +69,7 @@ public partial class App : Application
         VerifyLogIn(true);
     }
 
-    private void ChangeWindow(BaseViewModel viewModel, Window window, UserControl content)
+    private void ChangeWindow(Window window, UserControl content)
     {
         if (_mainWindow != null)
         {
@@ -80,7 +78,7 @@ public partial class App : Application
 
         _mainWindow = window;
         _navigationService.Initialize(_mainWindow);
-        _navigationService.NavigateToRoot(viewModel, content);
+        _navigationService.NavigateToRoot(content);
         _mainWindow.Show();
     }
     public static Window? GetMainWindow()

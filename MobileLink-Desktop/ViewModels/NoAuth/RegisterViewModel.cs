@@ -27,8 +27,7 @@ public class RegisterViewModel(ServerAPI api, NavigationService navigationServic
         {
             Dispatcher.UIThread.Post(() =>
             {
-                var viewModel = App.AppServiceProvider.GetRequiredService<EmailValidationViewModel>();
-                navigationService.NavigateTo(viewModel, new EmailValidation());
+                navigationService.NavigateTo(new EmailValidation());
             }, DispatcherPriority.Background);
         });
 
