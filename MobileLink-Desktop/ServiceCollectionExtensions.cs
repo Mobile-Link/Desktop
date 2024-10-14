@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
     public static void AddCommonServices(this IServiceCollection collection)
     {
         collection.AddSingleton<NavigationService>();
+        collection.AddSingleton<LocalStorage>();
         
         collection.AddSingleton<SocketConnection>();
         collection.AddSingleton<SocketMethods>();

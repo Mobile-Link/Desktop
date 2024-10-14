@@ -7,12 +7,17 @@ namespace MobileLink_Desktop.Utils;
 
 public class SocketConnection
 {
-    public HubConnection Connection { get; private set; } = new HubConnectionBuilder()
-        .WithUrl("http://localhost:5000/connectionhub")
-        .Build();
+    public HubConnection Connection { get; private set; }
 
     public EnServerconnectionStatusType StatusType = EnServerconnectionStatusType.Disconnected;
 
+    public SocketConnection(LocalStorage localStorage)
+    {
+        var storageContent = localStorage.GetStorage();
+        Connection = new HubConnectionBuilder()
+            .WithUrl($"http://localhost:5000/connectionhub?deviceId={storageContent?.IdDevice ?? 1234}")//TODO if no storage dont start connection
+            .Build();
+    }
 
     public async Task Connect()
     {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using MobileLink_Desktop.Classes;
 
 namespace MobileLink_Desktop.Utils;
@@ -17,9 +18,25 @@ public class LocalStorage()
 
     public LocalStorageContent? GetStorage()
     {
-        var encryptedToken = File.ReadAllText(LocalStorageFile);
-        var content = Decrypt(encryptedToken, StorageFileSecret);
-        return JsonSerializer.Deserialize<LocalStorageContent>(content);
+        try
+        {
+            using (FileStream fs = File.OpenRead(LocalStorageFile))
+            {
+                byte[] result = new byte[fs.Length];
+                fs.Read(result, 0, (int)fs.Length);
+                var content = Decrypt(Encoding.ASCII.GetString(result), StorageFileSecret);
+                return JsonSerializer.Deserialize<LocalStorageContent>(content);
+            }
+            
+        }
+        catch (Exception ex)
+        {
+            using (File.Create(LocalStorageFile))
+            {
+                
+            }
+            return new LocalStorageContent();
+        }
     }
 
     public void SetStorage(LocalStorageContent content)
@@ -38,7 +55,7 @@ public class LocalStorage()
             var keyBytes = password.GetBytes(KeySize / 8);
             using (var symmetricKey = new RijndaelManaged())
             {
-                symmetricKey.BlockSize = 256;
+                symmetricKey.BlockSize = 128;
                 symmetricKey.Mode = CipherMode.CBC;
                 symmetricKey.Padding = PaddingMode.PKCS7;
                 using (var encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))
