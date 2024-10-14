@@ -2,15 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using MobileLink_Desktop.Classes;
 using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.Service.ApiServices;
 using MobileLink_Desktop.Utils;
+using Newtonsoft.Json;
 
 namespace MobileLink_Desktop.ViewModels.Auth;
 
@@ -22,14 +26,14 @@ public class TransferenceViewModel : BaseViewModel
     private ObservableCollection<Device> _devices = [];
     private bool _canSendFile = false;
 
-    private readonly SocketMethods _socketConnection;
+    private readonly SocketMethods _socketMethods;
     private readonly ConnectionService _connectionService;
     private readonly DeviceService _deviceService;
 
-    public TransferenceViewModel(SocketMethods socketConnection, DeviceService deviceService,
+    public TransferenceViewModel(SocketMethods socketMethods, DeviceService deviceService,
         ConnectionService connectionService)
     {
-        _socketConnection = socketConnection;
+        _socketMethods = socketMethods;
         _deviceService = deviceService;
         _connectionService = connectionService;
         PopulateDevices();
@@ -55,6 +59,7 @@ public class TransferenceViewModel : BaseViewModel
             NotifyPropertyChanged(nameof(SelectedFileName));
         }
     }
+
     public long? SelectedDevice
     {
         get => _selectedDevice;
@@ -64,6 +69,7 @@ public class TransferenceViewModel : BaseViewModel
             NotifyPropertyChanged(nameof(SelectedDevice));
         }
     }
+
     public int ProgressTransference
     {
         get => _progressTransference;
@@ -108,15 +114,35 @@ public class TransferenceViewModel : BaseViewModel
             //TODO popup form error
             return;
         }
+
+        var transferId = 0;
+
         var length = new System.IO.FileInfo(_selectedFile.Path.AbsolutePath).Length;
-        _socketConnection.StartTransfer(_selectedDevice ?? 0, _selectedFile.Path.AbsolutePath, length, "/").ContinueWith(
+        _socketMethods.StartTransfer(_selectedDevice ?? 0, _selectedFile.Path.AbsolutePath, length, "/").ContinueWith(
             (taskStart) =>
             {
+                using (FileStream fs = File.OpenRead(_selectedFile.Path.AbsolutePath))
+                {
+                    byte[] result = new byte[fs.Length];
+                    fs.Read(result, 0, (int)fs.Length);
+
+                    // var fileChunk = Convert.ToBase64String(result);
+
+                    var fileChunk = result;
+
+                    const int chunkSize = 1024 * 1024;
+
+                    for (var i = 0; i < fileChunk.Length; i += chunkSize)
+                    {
+                        _socketMethods.SendPacket(transferId, i, fileChunk.Skip(i).Take(chunkSize).ToArray());
+                    }
+                }
+
                 var idTransference = 0; //TODO get idTransference or from the socket of http request
                 //TODO separate file into chunks and for each chunk call SendPacket(long idTransfer, long startByteIndex, byte[] byteArray)
             });
     }
-    
+
     public bool CanSendFile
     {
         get => _canSendFile;

@@ -30,17 +30,6 @@ public class SocketMethods(SocketConnection con)
     }
     public Task SendPacket(long idTransfer, long startByteIndex, byte[] byteArray)
     {
-        return ServerConnectionValidated.SendAsync("StartTransference", idTransfer, startByteIndex, byteArray);
+        return ServerConnectionValidated.SendAsync("SendFileChunk", idTransfer, startByteIndex, byteArray);
     }
-    public Task SendFile(byte[] chunk)
-    {
-        Console.WriteLine("Sending file");
-        return ServerConnectionValidated.SendAsync(
-            "SendFile",
-            1,
-            "testo",
-            chunk
-        );
-    }
-
 }
