@@ -24,8 +24,8 @@ public class LocalStorage()
             {
                 byte[] result = new byte[fs.Length];
                 fs.Read(result, 0, (int)fs.Length);
-                var content = Decrypt(Encoding.ASCII.GetString(result), StorageFileSecret);
-                return JsonSerializer.Deserialize<LocalStorageContent>(content);
+                // var content = Decrypt(Encoding.ASCII.GetString(result), StorageFileSecret);
+                return JsonSerializer.Deserialize<LocalStorageContent>(result);
             }
             
         }
@@ -42,8 +42,8 @@ public class LocalStorage()
     public void SetStorage(LocalStorageContent content)
     {
         var serializedContent = JsonSerializer.Serialize(content);
-        var encryptedContent = Encrypt(serializedContent, StorageFileSecret);
-        File.WriteAllText(LocalStorageFile, encryptedContent);
+        // var encryptedContent = Encrypt(serializedContent, StorageFileSecret);
+        File.WriteAllText(LocalStorageFile, serializedContent);
     }
     private static string Encrypt(string plainText, string passPhrase)
     {
@@ -55,7 +55,7 @@ public class LocalStorage()
             var keyBytes = password.GetBytes(KeySize / 8);
             using (var symmetricKey = new RijndaelManaged())
             {
-                symmetricKey.BlockSize = 128;
+                symmetricKey.BlockSize = 256;
                 symmetricKey.Mode = CipherMode.CBC;
                 symmetricKey.Padding = PaddingMode.PKCS7;
                 using (var encryptor = symmetricKey.CreateEncryptor(keyBytes, ivStringBytes))

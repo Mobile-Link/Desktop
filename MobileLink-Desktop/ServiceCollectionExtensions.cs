@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<LocalStorage>();
         
         collection.AddSingleton<SocketConnection>();
-        collection.AddSingleton<SocketMethods>();
+        collection.AddTransient<SocketMethods>();
         collection.AddScoped<ServerAPI>();
         collection.AddSingleton<DeviceService>();
         collection.AddSingleton<ConnectionService>();

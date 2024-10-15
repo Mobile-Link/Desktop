@@ -21,7 +21,7 @@ namespace MobileLink_Desktop.ViewModels.Auth;
 public class TransferenceViewModel : BaseViewModel
 {
     private IStorageItem? _selectedFile = null;
-    private long? _selectedDevice = null;
+    private int? _selectedDevice = null;
     private int _progressTransference;
     private ObservableCollection<Device> _devices = [];
     private bool _canSendFile = false;
@@ -60,7 +60,7 @@ public class TransferenceViewModel : BaseViewModel
         }
     }
 
-    public long? SelectedDevice
+    public int? SelectedDevice
     {
         get => _selectedDevice;
         set
@@ -139,7 +139,7 @@ public class TransferenceViewModel : BaseViewModel
                         UpdateStatusTransference((int)Math.Ceiling((double)chunkIndex / totalChunks * 100));
                     }
                     
-                    _socketMethods.SendPacket(idTransfer, startByteIndex, Array.Empty<byte>()).Wait();
+                    // _socketMethods.SendPacket(idTransfer, startByteIndex, Array.Empty<byte>()).Wait();
                 }
 
                 var idTransference = 0; //TODO get idTransference or from the socket of http request
