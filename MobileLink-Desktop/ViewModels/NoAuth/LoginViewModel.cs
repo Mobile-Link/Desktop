@@ -1,11 +1,12 @@
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using MobileLink_Desktop.Service.ApiServices;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class LoginViewModel(ServerAPI api) : BaseViewModel
+public class LoginViewModel(AuthService authService) : BaseViewModel
 {
     private string _emailUser = string.Empty;
 
@@ -32,6 +33,6 @@ public class LoginViewModel(ServerAPI api) : BaseViewModel
 
     public async Task SubmitLogin()
     {
-        await api.Login(_emailUser, _password);
+        await authService.Login(_emailUser, _password);
     }
 }

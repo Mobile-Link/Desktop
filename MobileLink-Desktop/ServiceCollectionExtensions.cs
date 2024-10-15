@@ -16,14 +16,17 @@ public static class ServiceCollectionExtensions
         
         collection.AddSingleton<SocketConnection>();
         collection.AddTransient<SocketMethods>();
-        collection.AddScoped<ServerAPI>();
-        collection.AddSingleton<DeviceService>();
-        collection.AddSingleton<ConnectionService>();
+        
+        collection.AddTransient<ServerAPI>();
+        collection.AddTransient<DeviceService>();
+        collection.AddTransient<ConnectionService>();
+        collection.AddTransient<AuthService>();
 
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<RegisterViewModel>();
         collection.AddTransient<LoginRegisterViewModel>();
         collection.AddTransient<EmailValidationViewModel>();
         collection.AddTransient<TransferenceViewModel>();
+        collection.AddTransient<CreateAccountViewModel>();
     }
 }

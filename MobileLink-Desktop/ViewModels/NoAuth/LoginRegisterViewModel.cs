@@ -11,7 +11,7 @@ namespace MobileLink_Desktop.ViewModels.NoAuth;
 public class LoginRegisterViewModel : BaseViewModel
 {
     public UserControl LoginControl { get; } = new Login();
-    public UserControl RegisterControl { get; } = new Register();
+    public UserControl RegisterControl { get; } = new Register(){};
     
     
     private GridLength _widthLogin = new GridLength(3, GridUnitType.Star);

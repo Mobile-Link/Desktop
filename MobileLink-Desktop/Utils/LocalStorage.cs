@@ -31,9 +31,10 @@ public class LocalStorage()
         }
         catch (Exception ex)
         {
-            using (File.Create(LocalStorageFile))
+            //TODO differentiate errors
+            using (StreamWriter sw = File.CreateText(LocalStorageFile))
             {
-                
+                sw.Write(new LocalStorageContent());
             }
             return new LocalStorageContent();
         }
