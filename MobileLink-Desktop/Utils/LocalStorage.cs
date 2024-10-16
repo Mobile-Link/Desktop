@@ -32,11 +32,12 @@ public class LocalStorage()
         catch (Exception ex)
         {
             //TODO differentiate errors
+            var emptyStorage = new LocalStorageContent();
             using (StreamWriter sw = File.CreateText(LocalStorageFile))
             {
-                sw.Write(new LocalStorageContent());
+                sw.Write(JsonSerializer.Serialize(emptyStorage));
             }
-            return new LocalStorageContent();
+            return emptyStorage;
         }
     }
 

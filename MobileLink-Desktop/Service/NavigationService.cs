@@ -31,6 +31,13 @@ public class NavigationService
         NavigateTo(tView);
     }
 
+    public void UpdateWindow(Window window, UserControl content)
+    {
+        App.ChangeWindow(window);
+        Initialize(window);
+        NavigateToRoot(content);
+    }
+
     public void NavigateToBack()
     {
         if (_stackNavigation.Count > 1)

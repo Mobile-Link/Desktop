@@ -9,16 +9,17 @@
              >
     <StackPanel>
         <!-- TODO Not centering -->
+        <Button Command="{Binding GoBack}" Content="Voltar" />
         <TextBlock Text="Crie sua conta" />
         <TextBlock Text="Sua senha deve conter no mínimo 8 caractéres" />
-        <Label Content="Nome de Usuário"></Label>
-        <TextBox Text="{Binding Username}"></TextBox>
-        <Label Content="Senha"></Label>
-        <TextBox Text="{Binding Password}"></TextBox>
-        <Label Content="Confirmação de Senha"></Label>
-        <TextBox Text="{Binding ConfirmPassword}"></TextBox>
-        <Label Content="Nome do dispositivo"></Label>
-        <TextBox Text="{Binding DeviceName}"></TextBox>
-        <Button Command="{Binding SubmitRegister}">Criar Conta</Button>
+        <Label Content="Nome de Usuário" />
+        <TextBox Text="{Binding Username}" />
+        <Label Content="Senha" />
+        <TextBox Text="{Binding Password}" />
+        <Label Content="Confirmação de Senha" />
+        <TextBox Text="{Binding ConfirmPassword}" />
+        <Label Content="Nome do dispositivo" />
+        <TextBox Text="{Binding DeviceName}" />
+        <Button Command="{Binding SubmitRegister}" Content="Criar Conta" />
     </StackPanel>
 </UserControl>

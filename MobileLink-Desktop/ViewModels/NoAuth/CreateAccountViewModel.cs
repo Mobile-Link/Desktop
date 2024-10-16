@@ -1,10 +1,12 @@
+using MobileLink_Desktop.Classes;
 using MobileLink_Desktop.Classes.Http.Request;
 using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Service.ApiServices;
+using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class CreateAccountViewModel(NavigationService navigationService, AuthService authService) : BaseViewModel
+public class CreateAccountViewModel(NavigationService navigationService, AuthService authService, SessionService sessionService) : BaseViewModel
 {
     public string code = string.Empty;
     public string email = string.Empty;
@@ -60,8 +62,25 @@ public class CreateAccountViewModel(NavigationService navigationService, AuthSer
             DeviceName = _deviceName
         }).ContinueWith((taskRegister) =>
         {
+            var result = taskRegister.Result;
+            if (result?.token == null)
+            {
+                //TODO error
+                return;
+            }
+
+            var localStorage = new LocalStorage();
+            var localStorageContent = localStorage.GetStorage();
+            localStorageContent ??= new LocalStorageContent();
+            localStorageContent.Token = result.token;
+            localStorage.SetStorage(localStorageContent);
+            sessionService.VerifyLogIn(true);
             //TODO get failure or token, when token put it on storage and go to homepage 
         });
     }
-    //TODO back button
+
+    public void GoBack()
+    {
+        navigationService.NavigateToBack();
+    }
 }

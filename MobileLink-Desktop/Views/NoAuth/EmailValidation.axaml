@@ -9,7 +9,7 @@
     <StackPanel
         VerticalAlignment="Stretch"
         HorizontalAlignment="Stretch">
-        <Button Command="{Binding Voltar}" Content="Voltar"/>
+        <Button Command="{Binding GoBack}" Content="Voltar"/>
         <TextBlock Text="Código de Verificação" TextAlignment="Center"/>
         <TextBlock Text="Verifique seu email para colocar o código de verificação correto " TextAlignment="Center"/>
         <TextBox Text="{Binding Code}" />

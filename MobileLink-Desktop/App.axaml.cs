@@ -18,11 +18,9 @@ namespace MobileLink_Desktop;
 
 public partial class App : Application
 {
-    private Window? _mainWindow;
     public static IServiceProvider AppServiceProvider { get; private set; }
     private readonly NavigationService _navigationService;
-    private readonly LocalStorage _localStorage;
-    private SocketConnection _socketConnection;
+    private readonly SocketConnection _socketConnection;
     public App()
     {
         var collection = new ServiceCollection();
@@ -30,7 +28,6 @@ public partial class App : Application
         AppServiceProvider = collection.BuildServiceProvider();
         _socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
         _navigationService = AppServiceProvider.GetRequiredService<NavigationService>();
-        _localStorage = AppServiceProvider.GetRequiredService<LocalStorage>();
 
     }
     public override void OnFrameworkInitializationCompleted()
@@ -51,39 +48,34 @@ public partial class App : Application
 
     private void VerifyLogIn(bool openWindow) //change name
     {
-        var storageContent = _localStorage.GetStorage();
-        if (storageContent == null || storageContent?.Token == null)
-        {
-            ChangeWindow(new NoAuthLayout(), new LoginRegister());
-            return;
-        }
-        _socketConnection.Connect();
-        if (storageContent.OpenWindowOnStartUp || openWindow)
-        {
-            ChangeWindow(new AuthLayout(), new Transference());
-        }
+        var session = AppServiceProvider.GetRequiredService<SessionService>();
+        session.VerifyLogIn(openWindow);
     }
 
     private void OpenWindow(object? sender, EventArgs eventArgs)
     {
         VerifyLogIn(true);
     }
-
-    private void ChangeWindow(Window window, UserControl content)
+    
+    public static void ChangeWindow(Window window)
     {
-        if (_mainWindow != null)
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
-            _mainWindow.Close();
+            //TODO other lifetimes
+            return;
+        }
+        if (desktopLifetime.MainWindow != null)
+        {
+            desktopLifetime.MainWindow.Close();
         }
 
-        _mainWindow = window;
-        _navigationService.Initialize(_mainWindow);
-        _navigationService.NavigateToRoot(content);
-        _mainWindow.Show();
+        desktopLifetime.MainWindow = window;
+        desktopLifetime.MainWindow.Show();
     }
+    
     public static Window? GetMainWindow()
     {
-        if (Application.Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifetime)
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
             return null;
         }
@@ -99,4 +91,5 @@ public partial class App : Application
 
         return null;
     }
+    
 }

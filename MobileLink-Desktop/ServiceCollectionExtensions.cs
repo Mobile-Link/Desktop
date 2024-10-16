@@ -12,7 +12,6 @@ public static class ServiceCollectionExtensions
     public static void AddCommonServices(this IServiceCollection collection)
     {
         collection.AddSingleton<NavigationService>();
-        collection.AddSingleton<LocalStorage>();
         
         collection.AddSingleton<SocketConnection>();
         collection.AddTransient<SocketMethods>();
@@ -21,6 +20,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<DeviceService>();
         collection.AddTransient<ConnectionService>();
         collection.AddTransient<AuthService>();
+        collection.AddTransient<SessionService>();
 
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<RegisterViewModel>();

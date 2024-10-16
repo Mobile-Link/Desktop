@@ -37,7 +37,7 @@ public class EmailValidationViewModel(NavigationService navigationService, AuthS
             }, DispatcherPriority.Background);
         });
     }
-    public void Voltar()
+    public void GoBack()
     {
         navigationService.NavigateToBack();
     }

@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using MobileLink_Desktop.Classes.Http.Request;
+using MobileLink_Desktop.Classes.Http.Response;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.Service.ApiServices;
@@ -63,11 +64,12 @@ public class AuthService(ServerAPI api)
         await response.Content.ReadAsStringAsync();
         return response.IsSuccessStatusCode;
     }
-    public async Task<string> Register(RegisterRequest request)
+    public async Task<RegisterResponse?> Register(RegisterRequest request)
     {
         var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
         var response = await api.HttpClient.PostAsync("/api/Auth/register", content);
-        return await response.Content.ReadAsStringAsync();
+        var body = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<RegisterResponse>(body);
     }
 }
