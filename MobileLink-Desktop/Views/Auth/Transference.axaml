@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:auth="clr-namespace:MobileLink_Desktop.ViewModels.Auth"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="auth:TransferenceViewModel"
+             x:Class="MobileLink_Desktop.Views.Auth.Transference">
+    <StackPanel>
+        <TextBlock Text="{Binding ProgressTransference}" Margin="0 0 0 10" HorizontalAlignment="Center"/>
+
+        <ComboBox ItemsSource="{Binding Devices}" SelectedIndex="{Binding SelectedDevice}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Content="Selecionar Arquivo"
+                Command="{Binding SelectFile}"
+                HorizontalAlignment="Center" Margin="0 0 0 10"/>
+
+        <Button Content="Enviar Arquivo"
+                Command="{Binding SendFile}"
+                IsEnabled="{Binding CanSendFile}"
+                HorizontalAlignment="Center"/>
+
+        <TextBlock Text="{Binding SelectedFileName}" Margin="10" HorizontalAlignment="Center"/>
+    </StackPanel>
+</UserControl>

@@ -5,5 +5,6 @@ public enum EnServerconnectionStatusType
     Connected,
     Disconnected,
     Connecting,
-    CantConnect
+    CantConnect,
+    UnAuthorized
 }

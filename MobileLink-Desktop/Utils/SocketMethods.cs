@@ -6,47 +6,24 @@ using MobileLink_Desktop.Interfaces;
 
 namespace MobileLink_Desktop.Utils;
 
-public class SocketMethods
+public class SocketMethods(SocketConnection con)
 {
-    private readonly HubConnection _serverConnection;
-    private readonly EnServerconnectionStatusType _serverStatusType;
-
-    private HubConnection ServerConnectionValidated
+    public Task StartTransfer(int idDevice, string filePath, long fileSize, string destinationPath)
     {
-        get
+        if (con.StatusType != EnServerconnectionStatusType.Connected)
         {
-            if (_serverStatusType != EnServerconnectionStatusType.Connected)
-            {
-                throw new Exception("Connection not established");
-            }
-
-            return _serverConnection;
+            throw new Exception("Connection not established");
         }
+        
+        return con.Connection.SendAsync("StartTransference", idDevice, filePath, fileSize, destinationPath);
     }
-    
-    public SocketMethods(
-        SocketConnection con
-    )
+    public Task SendPacket(long idTransfer, long startByteIndex, byte[] byteArray)
     {
-        _serverStatusType = con.StatusType;
-        _serverConnection = con.Connection;
+        if (con.StatusType != EnServerconnectionStatusType.Connected)
+        {
+            throw new Exception("Connection not established");
+        }
+        
+        return con.Connection.SendAsync("SendFileChunk", idTransfer, startByteIndex, byteArray);
     }
-    
-    public Task SendMessage(string message)
-    {
-        Console.WriteLine("Sending message");
-        return ServerConnectionValidated.SendAsync("SendMessage", "1", message);
-    }
-    
-    public Task SendFile(byte[] chunk)
-    {
-        Console.WriteLine("Sending file");
-        return ServerConnectionValidated.SendAsync(
-            "SendFile",
-            1,
-            "testo",
-            chunk
-        );
-    }
-
 }

@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MobileLink_Desktop.Views.NoAuth.CreateAccount"
+             xmlns:vmNoAuth="clr-namespace:MobileLink_Desktop.ViewModels.NoAuth"
+             x:DataType="vmNoAuth:CreateAccountViewModel"
+             >
+    <StackPanel>
+        <!-- TODO Not centering -->
+        <Button Command="{Binding GoBack}" Content="Voltar" />
+        <TextBlock Text="Crie sua conta" />
+        <TextBlock Text="Sua senha deve conter no mínimo 8 caractéres" />
+        <Label Content="Nome de Usuário" />
+        <TextBox Text="{Binding Username}" />
+        <Label Content="Senha" />
+        <TextBox Text="{Binding Password}" />
+        <Label Content="Confirmação de Senha" />
+        <TextBox Text="{Binding ConfirmPassword}" />
+        <Label Content="Nome do dispositivo" />
+        <TextBox Text="{Binding DeviceName}" />
+        <Button Command="{Binding SubmitRegister}" Content="Criar Conta" />
+    </StackPanel>
+</UserControl>

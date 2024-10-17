@@ -10,9 +10,7 @@ namespace MobileLink_Desktop.Service;
 
 public class NavigationService
 {
-    private readonly IServiceProvider serviceProvider = App.AppServiceProvider;
-
-    private readonly Stack<UserControl> stackNavigation = new();
+    private readonly Stack<UserControl> _stackNavigation = new();
 
     private ContentControl _contentControl = new();
 
@@ -21,28 +19,34 @@ public class NavigationService
         this._contentControl = contentControl;
     }
 
-    public void NavigateTo(BaseViewModel viewModel, UserControl tView)
+    public void NavigateTo(UserControl tView)
     {
-        tView.DataContext = viewModel;
-        stackNavigation.Push(tView);
+        _stackNavigation.Push(tView);
         _contentControl.Content = tView;
     }
 
-    public void NavigateToRoot(BaseViewModel viewModel, UserControl tView)
+    public void NavigateToRoot(UserControl tView)
     {
-        stackNavigation.Clear();
-        NavigateTo(viewModel, tView);
+        _stackNavigation.Clear();
+        NavigateTo(tView);
+    }
+
+    public void UpdateWindow(Window window, UserControl content)
+    {
+        App.ChangeWindow(window);
+        Initialize(window);
+        NavigateToRoot(content);
     }
 
     public void NavigateToBack()
     {
-        if (stackNavigation.Count > 1)
+        if (_stackNavigation.Count > 1)
         {
-            stackNavigation.Pop();
+            _stackNavigation.Pop();
         }
-        var window = stackNavigation.Pop();
+        var window = _stackNavigation.Pop();
 
-        stackNavigation.Push(window);
+        _stackNavigation.Push(window);
         _contentControl.Content = window;
     }
 }

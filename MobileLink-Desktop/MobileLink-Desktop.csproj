@@ -45,10 +45,6 @@
         <DependentUpon>MainLayout.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="Views\Auth\AuthTest.axaml.cs">
-        <DependentUpon>Login-Register.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="Views\NoAuth\Register.axaml.cs">
         <DependentUpon>Register.axaml</DependentUpon>
         <SubType>Code</SubType>

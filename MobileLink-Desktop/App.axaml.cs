@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels;
+using MobileLink_Desktop.ViewModels.Auth;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.Views.Auth;
 using MobileLink_Desktop.Views.NoAuth;
@@ -17,18 +18,17 @@ namespace MobileLink_Desktop;
 
 public partial class App : Application
 {
-    private Window? _mainWindow;
     public static IServiceProvider AppServiceProvider { get; private set; }
     private readonly NavigationService _navigationService;
-
+    private readonly SocketConnection _socketConnection;
     public App()
     {
         var collection = new ServiceCollection();
         collection.AddCommonServices();
         AppServiceProvider = collection.BuildServiceProvider();
-        var socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
+        _socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
         _navigationService = AppServiceProvider.GetRequiredService<NavigationService>();
-        socketConnection.Connect();
+
     }
     public override void OnFrameworkInitializationCompleted()
     {
@@ -41,44 +41,55 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            //TODO get from config file
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
     }
 
     private void VerifyLogIn(bool openWindow) //change name
     {
-        const bool loggedIn = false;
-        const bool openWindowOnStartup = false; //TODO add this to localstorage 
-
-        if (!loggedIn)
-        {
-            var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
-            ChangeWindow(vm, new NoAuthLayout(), new LoginRegister());
-            return;
-        }
-
-        if (openWindowOnStartup || openWindow)
-        {
-            var vm = AppServiceProvider.GetRequiredService<LoginRegisterViewModel>();
-            ChangeWindow(vm, new AuthLayout(), new UserControl());
-        }
+        var session = AppServiceProvider.GetRequiredService<SessionService>();
+        session.VerifyLogIn(openWindow);
     }
 
     private void OpenWindow(object? sender, EventArgs eventArgs)
     {
         VerifyLogIn(true);
     }
-
-    private void ChangeWindow(BaseViewModel viewModel, Window window, UserControl content)
+    
+    public static void ChangeWindow(Window window)
     {
-        if (_mainWindow != null)
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifetime)
         {
-            _mainWindow.Close();
+            //TODO other lifetimes
+            return;
+        }
+        if (desktopLifetime.MainWindow != null)
+        {
+            desktopLifetime.MainWindow.Close();
         }
 
-        _mainWindow = window;
-        _navigationService.Initialize(_mainWindow);
-        _navigationService.NavigateToRoot(viewModel, content);
-        _mainWindow.Show();
+        desktopLifetime.MainWindow = window;
+        desktopLifetime.MainWindow.Show();
     }
+    
+    public static Window? GetMainWindow()
+    {
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            return null;
+        }
+        if (desktopLifetime.MainWindow != null)
+        {
+            return desktopLifetime.MainWindow;
+        }
+
+        if (desktopLifetime.Windows.Count > 0)
+        {
+            return desktopLifetime.Windows[0];
+        }
+
+        return null;
+    }
+    
 }
