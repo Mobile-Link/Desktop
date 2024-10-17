@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using MobileLink_Desktop.Classes;
 using MobileLink_Desktop.Interfaces;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.Views.Auth;
@@ -35,5 +36,16 @@ public class SessionService(SocketConnection socketConnection, NavigationService
                     DispatcherPriority.Background);
             });
         }
+    }
+
+    public void UpdateTokenAndAuthorize(string token, int idDevice)
+    {
+        var localStorage = new LocalStorage();
+        var localStorageContent = localStorage.GetStorage();
+        localStorageContent ??= new LocalStorageContent();
+        localStorageContent.Token = token;
+        localStorageContent.IdDevice = idDevice;
+        localStorage.SetStorage(localStorageContent);
+        VerifyLogIn(true);
     }
 }

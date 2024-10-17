@@ -4,6 +4,7 @@ using MobileLink_Desktop.Service.ApiServices;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.ViewModels.Auth;
+using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop;
 
@@ -28,5 +29,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<EmailValidationViewModel>();
         collection.AddTransient<TransferenceViewModel>();
         collection.AddTransient<CreateAccountViewModel>();
+        collection.AddTransient<LoginCreateDevice>();
+        collection.AddTransient<LoginCreateDeviceViewModel>();
     }
 }

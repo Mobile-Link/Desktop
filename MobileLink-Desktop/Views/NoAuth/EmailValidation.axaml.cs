@@ -12,6 +12,17 @@ public partial class EmailValidation : UserControl
     {
         var vm = App.AppServiceProvider.GetRequiredService<EmailValidationViewModel>();
         vm.email = email;
+        vm.nextScreen = SwitchNextScreen.CreateAccount;
+        DataContext = vm;
+        InitializeComponent();
+    }
+
+    public EmailValidation(string login, string password)
+    {
+        var vm = App.AppServiceProvider.GetRequiredService<EmailValidationViewModel>();
+        vm.login = login;
+        vm.password = password;
+        vm.nextScreen = SwitchNextScreen.LoginCreateDevice;
         DataContext = vm;
         InitializeComponent();
     }

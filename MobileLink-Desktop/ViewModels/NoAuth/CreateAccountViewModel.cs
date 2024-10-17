@@ -69,12 +69,7 @@ public class CreateAccountViewModel(NavigationService navigationService, AuthSer
                 return;
             }
 
-            var localStorage = new LocalStorage();
-            var localStorageContent = localStorage.GetStorage();
-            localStorageContent ??= new LocalStorageContent();
-            localStorageContent.Token = result.token;
-            localStorage.SetStorage(localStorageContent);
-            sessionService.VerifyLogIn(true);
+            sessionService.UpdateTokenAndAuthorize(result.token, result.idDevice);
             //TODO get failure or token, when token put it on storage and go to homepage 
         });
     }

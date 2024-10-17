@@ -32,7 +32,10 @@ public class LocalStorage()
         catch (Exception ex)
         {
             //TODO differentiate errors
-            var emptyStorage = new LocalStorageContent();
+            var emptyStorage = new LocalStorageContent()
+            {
+                IdDevice = null
+            };
             using (StreamWriter sw = File.CreateText(LocalStorageFile))
             {
                 sw.Write(JsonSerializer.Serialize(emptyStorage));
