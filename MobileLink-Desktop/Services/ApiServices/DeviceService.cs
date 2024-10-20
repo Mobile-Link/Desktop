@@ -17,6 +17,6 @@ public class DeviceService(ServerAPI api)
             //Todo popup or return error
             return [];
         }
-        return JsonSerializer.Deserialize<List<Device>>(resContent) ?? [];
+        return resContent.DeserializeFromCamelCase<List<Device>>() ?? [];
     }
 }
