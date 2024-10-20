@@ -14,7 +14,10 @@ public class SocketConnection
     {
         var storageContent = new LocalStorage().GetStorage();
         Connection = new HubConnectionBuilder()
-            .WithUrl($"http://localhost:5000/connectionhub?deviceId={storageContent?.IdDevice ?? 0}")//TODO if no storage dont start connection
+            .WithUrl($"http://localhost:5000/connectionhub?deviceId={storageContent?.IdDevice ?? 0}", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(storageContent?.Token);
+            })//TODO if no storage dont start connection
             .Build();
     }
 

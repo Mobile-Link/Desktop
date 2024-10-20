@@ -10,7 +10,7 @@ public class DeviceService(ServerAPI api)
 {
     public async Task<List<Device>> GetUserDevices()
     {
-        var res = await api.HttpClient.GetAsync("/api/Device");
+        var res = await api.HttpClient.GetAsync("/api/Device/GetUserDevices");//TODO remove param
         var resContent = await res.Content.ReadAsStringAsync();
         if (!res.IsSuccessStatusCode)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -35,6 +36,20 @@ public class AuthService(ServerAPI api)
             password = password,
         }), Encoding.UTF8, "application/json");
         return await api.HttpClient.PostAsync("/api/Auth/validateCredentials", content);
+    }
+    
+    public async Task<bool> VerifyToken()
+    {
+        try
+        {
+            var result = await api.HttpClient.GetAsync("/api/Auth/verifyToken");
+            return result.IsSuccessStatusCode;
+        }
+        catch (HttpRequestException ex)
+        {
+            //TODO popup or return error
+            return false;
+        }
     }
 
     public async Task<RegisterResponse?> LoginCreateDevice(string emailUser, string password, string deviceName,
@@ -86,7 +101,10 @@ public class AuthService(ServerAPI api)
 
     public async Task<bool> VerifyCode(string emailOrUsername, string code)
     {
-        var content = new StringContent(JsonSerializer.Serialize(new { email = emailOrUsername, code }), Encoding.UTF8,
+        var content = new StringContent(JsonSerializer.Serialize(new
+            {
+                // email = emailOrUsername, code
+            }), Encoding.UTF8,
             "application/json");
 
         var response = await api.HttpClient.PostAsync($"/api/Auth/verifyCode?email={emailOrUsername}&code={code}", content);
