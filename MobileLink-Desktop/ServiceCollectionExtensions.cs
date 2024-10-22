@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<ConnectionService>();
         collection.AddTransient<AuthService>();
         collection.AddTransient<SessionService>();
+        collection.AddTransient<TransferenceService>();
 
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<RegisterViewModel>();

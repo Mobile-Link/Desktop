@@ -21,7 +21,7 @@ namespace MobileLink_Desktop.ViewModels.Auth;
 public class TransferenceViewModel : BaseViewModel
 {
     private IStorageItem? _selectedFile = null;
-    private int? _selectedDevice = null;
+    private int? _selectedDeviceIndex = null;
     private int _progressTransference;
     private ObservableCollection<Device> _devices = [];
     private bool _canSendFile = false;
@@ -29,13 +29,15 @@ public class TransferenceViewModel : BaseViewModel
     private readonly SocketMethods _socketMethods;
     private readonly ConnectionService _connectionService;
     private readonly DeviceService _deviceService;
+    private readonly TransferenceService _transferenceService;
 
     public TransferenceViewModel(SocketMethods socketMethods, DeviceService deviceService,
-        ConnectionService connectionService)
+        ConnectionService connectionService, TransferenceService transferenceService)
     {
         _socketMethods = socketMethods;
         _deviceService = deviceService;
         _connectionService = connectionService;
+        _transferenceService = transferenceService;
         PopulateDevices();
     }
 
@@ -60,13 +62,13 @@ public class TransferenceViewModel : BaseViewModel
         }
     }
 
-    public int? SelectedDevice
+    public int? SelectedDeviceIndex
     {
-        get => _selectedDevice;
+        get => _selectedDeviceIndex;
         set
         {
-            _selectedDevice = value;
-            NotifyPropertyChanged(nameof(SelectedDevice));
+            _selectedDeviceIndex = value;
+            NotifyPropertyChanged(nameof(SelectedDeviceIndex));
         }
     }
 
@@ -109,41 +111,46 @@ public class TransferenceViewModel : BaseViewModel
 
     public void SendFile()
     {
-        if (_selectedFile == null || _selectedDevice == null)
+        if (_selectedFile == null || _selectedDeviceIndex == null)
         {
             //TODO popup form error
             return;
         }
 
-        const int idTransfer = 0;
-
+        Device? device = null;
+        device = Devices[_selectedDeviceIndex ?? 0];
+        if (device == null)
+        {
+            //TODO error
+            return;
+        }
         var length = new System.IO.FileInfo(_selectedFile.Path.AbsolutePath).Length;
-        _socketMethods.StartTransfer(_selectedDevice ?? 0, _selectedFile.Path.AbsolutePath, length, "/").ContinueWith(
+        _transferenceService.StartTransference(device.IdDevice, _selectedFile.Path.AbsolutePath, length, "/").ContinueWith(
             (taskStart) =>
             {
+                if (taskStart.Result == null)
+                {
+                    //TODO error
+                    return;
+                }
                 using (FileStream fs = File.OpenRead(_selectedFile.Path.AbsolutePath))
                 {
                     const int chunkSize = 1024 * 1024;
                     var totalChunks = (int)Math.Ceiling((double)fs.Length / chunkSize);
                     
-                    var startByteIndex = 0;
+                    long startByteIndex = 0;
                     var chunkIndex = 0;
                     
                     while (startByteIndex < fs.Length)
                     {
                         var byteArray = new byte[chunkSize];
                         fs.Read(byteArray, 0, chunkSize);
-                        _socketMethods.SendPacket(idTransfer, startByteIndex, byteArray).Wait();
+                        _transferenceService.SendFileChunk(taskStart.Result ?? 0, startByteIndex, byteArray).Wait();
                         startByteIndex += chunkSize;
                         chunkIndex++;
                         UpdateStatusTransference((int)Math.Ceiling((double)chunkIndex / totalChunks * 100));
                     }
-                    
-                    // _socketMethods.SendPacket(idTransfer, startByteIndex, Array.Empty<byte>()).Wait();
                 }
-
-                var idTransference = 0; //TODO get idTransference or from the socket of http request
-                //TODO separate file into chunks and for each chunk call SendPacket(long idTransfer, long startByteIndex, byte[] byteArray)
             });
     }
 
@@ -164,7 +171,10 @@ public class TransferenceViewModel : BaseViewModel
         Devices.Clear();
         var tasks = new List<Task>
         {
-            _deviceService.GetUserDevices().ContinueWith((taskUsr) => { userDevices = taskUsr.Result; }),
+            _deviceService.GetUserDevices().ContinueWith((taskUsr) =>
+            {
+                userDevices = taskUsr.Result;
+            }),
             _connectionService.GetConnectedDevices().ContinueWith((taskCon) => { connectedDevices = taskCon.Result; })
         };
         Task.WhenAll(tasks.ToArray()).ContinueWith((taskTasks) =>
@@ -172,16 +182,6 @@ public class TransferenceViewModel : BaseViewModel
             Devices = new ObservableCollection<Device>(
                 userDevices.Where((device) => connectedDevices.Contains(device.IdDevice)).ToList()
             );
-            if (Devices.Count == 0)
-            {
-                //temp
-                Devices.Add(new Device()
-                {
-                    Name = "Teste",
-                    IdDevice = 123
-                });
-                //TODO alert no devices
-            }
         });
     }
 }

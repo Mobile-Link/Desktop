@@ -10,13 +10,13 @@ public class DeviceService(ServerAPI api)
 {
     public async Task<List<Device>> GetUserDevices()
     {
-        var res = await api.HttpClient.GetAsync("/api/Device");
+        var res = await api.HttpClient.GetAsync("/api/Device/GetUserDevices");//TODO remove param
         var resContent = await res.Content.ReadAsStringAsync();
         if (!res.IsSuccessStatusCode)
         {
             //Todo popup or return error
             return [];
         }
-        return JsonSerializer.Deserialize<List<Device>>(resContent) ?? [];
+        return resContent.DeserializeFromCamelCase<List<Device>>() ?? [];
     }
 }
