@@ -52,7 +52,8 @@ public class SocketConnection
         Connection.On<string,string>("UserDisconnected", 
             (userId, message) => { Console.WriteLine($"User {userId} : {message}"); });
         
-        Connection.On<long ,long, long, long, byte[]>("ReceiveFileChunk", ReceiveFileChunk);
+        Connection.On<int, long, byte[]>("ReceiveFileChunk", ReceiveFileChunk);
+        Connection.On<int, string, long>("ReceiveNewTransference", ReceiveNewTransference);
         
         Connection.On<long>("FinalizeTransference", (idTransference =>
         {
@@ -60,8 +61,15 @@ public class SocketConnection
         }));
     }
 
-    private void ReceiveFileChunk(long idTransfer, long fileSize, long chunkSize, long startByteIndex, byte[] byteArray)
+    private void ReceiveNewTransference(int idTransfer, string filePath, long fileSize)
     {
+        Console.WriteLine($"New transfer started {idTransfer}, {filePath}, {fileSize}");
+        //TODO write
+    }
+    
+    private void ReceiveFileChunk(int idTransfer, long startByteIndex, byte[] byteArray)
+    {
+        Console.WriteLine($"New chunk received {idTransfer}, {startByteIndex}, Length: {byteArray.Length}");
         //TODO write
     }
 
