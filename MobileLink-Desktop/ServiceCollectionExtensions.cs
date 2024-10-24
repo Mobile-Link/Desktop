@@ -15,7 +15,6 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<NavigationService>();
         
         collection.AddSingleton<SocketConnection>();
-        collection.AddTransient<SocketMethods>();
         
         collection.AddTransient<ServerAPI>();
         collection.AddTransient<DeviceService>();

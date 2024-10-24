@@ -37,7 +37,7 @@ public class LoginViewModel(AuthService authService, NavigationService navigatio
     public async Task SubmitLogin()
     {
         var storageContent = new LocalStorage().GetStorage();
-        if (storageContent == null || storageContent?.IdDevice == null)
+        if (storageContent?.IdDevice == null)
         {
             await authService.ValidateCredentials(_emailUser, _password).ContinueWith((taskVerify) =>
             {
