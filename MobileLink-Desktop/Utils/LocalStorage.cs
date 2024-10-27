@@ -34,7 +34,11 @@ public class LocalStorage()
             //TODO differentiate errors
             var emptyStorage = new LocalStorageContent()
             {
-                IdDevice = null
+                IdDevice = null,
+                OpenWindowOnStartUp = false,
+                DefaultReceivingFolder = null,
+                Token = null,
+                CloseToTray = true
             };
             using (StreamWriter sw = File.CreateText(LocalStorageFile))
             {

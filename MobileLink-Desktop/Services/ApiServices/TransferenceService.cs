@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.Service.ApiServices;
@@ -42,5 +43,20 @@ public class TransferenceService(ServerAPI api)
             return false;
         }
         return true;
+    }
+    public async Task<Transference?> GetTransfer(int idTransfer)
+    {
+        var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            idTransfer
+        }), Encoding.UTF8, "application/json");
+        var response = await api.HttpClient.PostAsync("/api/Transfer/GetTransfer", content);
+        if (!response.IsSuccessStatusCode)
+        {
+            //Todo popup or return error
+            return null;
+        }
+        var body = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<Transference>(body);
     }
 }

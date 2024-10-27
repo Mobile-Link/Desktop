@@ -9,7 +9,7 @@ using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class RegisterViewModel(AuthService authService, NavigationService navigationService) : BaseViewModel
+public class RegisterViewModel(AuthService authService, Navigation navigation) : BaseViewModel
 {
     private string _email = string.Empty;
 
@@ -28,7 +28,7 @@ public class RegisterViewModel(AuthService authService, NavigationService naviga
         {
             Dispatcher.UIThread.Post(() =>
             { 
-                navigationService.NavigateTo(new EmailValidation(_email));
+                navigation.NavigateTo(new EmailValidation(_email));
             }, DispatcherPriority.Background);
         });
 

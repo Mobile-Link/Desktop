@@ -7,11 +7,13 @@ namespace MobileLink_Desktop.Utils;
 
 public class SocketConnection
 {
+    private TransferenceHandler _transferenceHandler;
     public HubConnection Connection { get; private set; }
     public EnServerconnectionStatusType StatusType = EnServerconnectionStatusType.Disconnected;
 
-    public SocketConnection()
+    public SocketConnection(TransferenceHandler transferenceHandler)
     {
+        _transferenceHandler = transferenceHandler;
         var storageContent = new LocalStorage().GetStorage();
         Connection = new HubConnectionBuilder()
             .WithUrl($"http://localhost:5000/connectionhub?deviceId={storageContent?.IdDevice ?? 0}", options =>
@@ -52,7 +54,7 @@ public class SocketConnection
         Connection.On<string,string>("UserDisconnected", 
             (userId, message) => { Console.WriteLine($"User {userId} : {message}"); });
         
-        Connection.On<int, long, byte[]>("ReceiveFileChunk", ReceiveFileChunk);
+        Connection.On<int, long, byte[]>("ReceiveFileChunk", _transferenceHandler.ReceiveFileChunk);
         Connection.On<int, string, long>("ReceiveNewTransference", ReceiveNewTransference);
         
         Connection.On<long>("FinalizeTransference", (idTransference =>
@@ -67,11 +69,7 @@ public class SocketConnection
         //TODO write
     }
     
-    private void ReceiveFileChunk(int idTransfer, long startByteIndex, byte[] byteArray)
-    {
-        Console.WriteLine($"New chunk received {idTransfer}, {startByteIndex}, Length: {byteArray.Length}");
-        //TODO write
-    }
+    
 
     private async Task RetryConnection()
     {

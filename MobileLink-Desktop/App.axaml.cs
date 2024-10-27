@@ -19,7 +19,7 @@ namespace MobileLink_Desktop;
 public partial class App : Application
 {
     public static IServiceProvider AppServiceProvider { get; private set; }
-    private readonly NavigationService _navigationService;
+    private readonly Navigation _navigation;
     private readonly SocketConnection _socketConnection;
     public App()
     {
@@ -27,7 +27,7 @@ public partial class App : Application
         collection.AddCommonServices();
         AppServiceProvider = collection.BuildServiceProvider();
         _socketConnection = AppServiceProvider.GetRequiredService<SocketConnection>();
-        _navigationService = AppServiceProvider.GetRequiredService<NavigationService>();
+        _navigation = AppServiceProvider.GetRequiredService<Navigation>();
 
     }
     public override void OnFrameworkInitializationCompleted()
@@ -48,7 +48,7 @@ public partial class App : Application
 
     private void VerifyLogIn(bool openWindow) //change name
     {
-        var session = AppServiceProvider.GetRequiredService<SessionService>();
+        var session = AppServiceProvider.GetRequiredService<Session>();
         session.VerifyLogIn(openWindow);
     }
 

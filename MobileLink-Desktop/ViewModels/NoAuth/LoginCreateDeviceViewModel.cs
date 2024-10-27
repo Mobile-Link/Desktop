@@ -5,7 +5,7 @@ using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class LoginCreateDeviceViewModel(AuthService authService, NavigationService navigationService, SessionService sessionService) : BaseViewModel
+public class LoginCreateDeviceViewModel(AuthService authService, Navigation navigation, Session session) : BaseViewModel
 {
     private string _deviceName = string.Empty;
     public string login = string.Empty;
@@ -24,7 +24,7 @@ public class LoginCreateDeviceViewModel(AuthService authService, NavigationServi
 
     public void CreateDevice()
     {
-        authService.LoginCreateDevice(login, password, DeviceName, code).ContinueWith((taskLogin) =>
+        authService.LoginCreateDevice(login, password, DeviceName, code).ContinueWith(async (taskLogin) =>
         {
             var result = taskLogin.Result;
             if (taskLogin.Result == null || taskLogin.Result.token == null)
@@ -32,13 +32,13 @@ public class LoginCreateDeviceViewModel(AuthService authService, NavigationServi
                 //TODO error
                 return;
             }
-            sessionService.UpdateTokenAndAuthorize(result.token, result.idDevice);
+            await session.UpdateTokenAndAuthorize(result.token, result.idDevice);
 
         });
     }
 
     public void GoBack()
     {
-        navigationService.NavigateToBack();
+        navigation.NavigateToBack();
     }
 }

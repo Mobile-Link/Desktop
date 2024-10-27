@@ -4,6 +4,7 @@ using MobileLink_Desktop.Service.ApiServices;
 using MobileLink_Desktop.Utils;
 using MobileLink_Desktop.ViewModels.NoAuth;
 using MobileLink_Desktop.ViewModels.Auth;
+using MobileLink_Desktop.ViewModels.Dialog;
 using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop;
@@ -12,16 +13,16 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection)
     {
-        collection.AddSingleton<NavigationService>();
-        
-        collection.AddSingleton<SocketConnection>();
-        
         collection.AddTransient<ServerAPI>();
         collection.AddTransient<DeviceService>();
         collection.AddTransient<ConnectionService>();
         collection.AddTransient<AuthService>();
-        collection.AddTransient<SessionService>();
         collection.AddTransient<TransferenceService>();
+        
+        collection.AddSingleton<Navigation>();
+        collection.AddSingleton<SocketConnection>();
+        collection.AddTransient<Session>();
+        collection.AddTransient<TransferenceHandler>();
 
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<RegisterViewModel>();
@@ -31,5 +32,6 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<CreateAccountViewModel>();
         collection.AddTransient<LoginCreateDevice>();
         collection.AddTransient<LoginCreateDeviceViewModel>();
+        collection.AddTransient<SelectFolderDialogViewModel>();
     }
 }

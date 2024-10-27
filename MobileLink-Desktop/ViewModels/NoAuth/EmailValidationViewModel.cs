@@ -12,7 +12,7 @@ public enum SwitchNextScreen
     CreateAccount,
     LoginCreateDevice
 }
-public class EmailValidationViewModel(NavigationService navigationService, AuthService authService) : BaseViewModel
+public class EmailValidationViewModel(Navigation navigation, AuthService authService) : BaseViewModel
 {
     private string _code = string.Empty;
     public string email = string.Empty;
@@ -55,7 +55,7 @@ public class EmailValidationViewModel(NavigationService navigationService, AuthS
             }
             Dispatcher.UIThread.Post(() =>
             { 
-                navigationService.NavigateTo(new CreateAccount(email, _code));
+                navigation.NavigateTo(new CreateAccount(email, _code));
             }, DispatcherPriority.Background);
         });
     }
@@ -70,12 +70,12 @@ public class EmailValidationViewModel(NavigationService navigationService, AuthS
             }
             Dispatcher.UIThread.Post(() =>
             { 
-                navigationService.NavigateTo(new LoginCreateDevice(login, password, _code));
+                navigation.NavigateTo(new LoginCreateDevice(login, password, _code));
             }, DispatcherPriority.Background);
         });
     }
     public void GoBack()
     {
-        navigationService.NavigateToBack();
+        navigation.NavigateToBack();
     }
 }

@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Name="SelectFolderDialogWindow"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MobileLink_Desktop.Views.Dialog.SelectFolderDialog"
+             xmlns:dialog="clr-namespace:MobileLink_Desktop.ViewModels.Dialog"
+             x:DataType="dialog:SelectFolderDialogViewModel"
+             >
+    <StackPanel>
+        <TextBox Text="{Binding InstructionText}"/>
+        <Button Command="{Binding SelectFolder}" Content="{Binding ButtonText}"/>
+        <Button 
+            Command="{Binding Cancel}" 
+            Content="Cancelar"
+        />
+        <Button 
+            Command="{Binding Confirm}"
+            Content="Confirmar"
+        />
+    </StackPanel>
+</UserControl>

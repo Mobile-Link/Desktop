@@ -130,7 +130,7 @@ public class TransferenceViewModel : BaseViewModel
             return;
         }
 
-        var length = new System.IO.FileInfo(_selectedFile.Path.AbsolutePath).Length;
+        var length = new System.IO.FileInfo(_selectedFile.Path.LocalPath).Length;
         _transferenceService.StartTransference(device.IdDevice, _selectedFile.Path.AbsolutePath, length, "/")
             .ContinueWith(
                 (taskStart) =>
@@ -141,7 +141,7 @@ public class TransferenceViewModel : BaseViewModel
                         return;
                     }
 
-                    using (FileStream fs = File.OpenRead(_selectedFile.Path.AbsolutePath))
+                    using (FileStream fs = File.OpenRead(_selectedFile.Path.LocalPath))
                     {
                         const int chunkSize = 1024 * 1024;
                         var totalChunks = (int)Math.Ceiling((double)fs.Length / chunkSize);
@@ -153,7 +153,8 @@ public class TransferenceViewModel : BaseViewModel
                         {
                             var byteArray = new byte[chunkSize];
                             fs.Read(byteArray, 0, chunkSize);
-                            _transferenceService.SendFileChunk(taskStart.Result ?? 0, startByteIndex, byteArray).Wait();
+                            _transferenceService.SendFileChunk(taskStart.Result ?? 0, startByteIndex, byteArray).ContinueWith(
+                                (_) => { });
                             startByteIndex += chunkSize;
                             chunkIndex++;
                             UpdateStatusTransference((int)Math.Ceiling((double)chunkIndex / totalChunks * 100));
