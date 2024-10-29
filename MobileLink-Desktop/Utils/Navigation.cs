@@ -8,7 +8,7 @@ namespace MobileLink_Desktop.Service;
 
 
 
-public class NavigationService
+public class Navigation
 {
     private readonly Stack<UserControl> _stackNavigation = new();
 

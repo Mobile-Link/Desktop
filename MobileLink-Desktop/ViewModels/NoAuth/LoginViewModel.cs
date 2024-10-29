@@ -9,7 +9,7 @@ using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class LoginViewModel(AuthService authService, NavigationService navigationService, SessionService sessionService) : BaseViewModel
+public class LoginViewModel(AuthService authService, Navigation navigation, Session session) : BaseViewModel
 {
     private string _emailUser = string.Empty;
 
@@ -37,7 +37,7 @@ public class LoginViewModel(AuthService authService, NavigationService navigatio
     public async Task SubmitLogin()
     {
         var storageContent = new LocalStorage().GetStorage();
-        if (storageContent == null || storageContent?.IdDevice == null)
+        if (storageContent?.IdDevice == null)
         {
             await authService.ValidateCredentials(_emailUser, _password).ContinueWith((taskVerify) =>
             {
@@ -48,14 +48,14 @@ public class LoginViewModel(AuthService authService, NavigationService navigatio
                 }
                 Dispatcher.UIThread.Post(() =>
                 { 
-                    navigationService.NavigateTo(new EmailValidation(_emailUser, _password));
+                    navigation.NavigateTo(new EmailValidation(_emailUser, _password));
                 }, DispatcherPriority.Background);
             });
             
             return;
         }
 
-        await authService.Login(_emailUser, _password, storageContent.IdDevice ?? 0).ContinueWith((taskLogin) =>
+        await authService.Login(_emailUser, _password, storageContent.IdDevice ?? 0).ContinueWith(async (taskLogin) =>
         {
             var result = taskLogin.Result;
             if (result == null || result.token == null || result.idDevice == null)
@@ -63,7 +63,7 @@ public class LoginViewModel(AuthService authService, NavigationService navigatio
                 //TODO error
                 return;
             }
-            sessionService.UpdateTokenAndAuthorize(result.token, result.idDevice);
+            await session.UpdateTokenAndAuthorize(result.token, storageContent.IdDevice ?? 0);
         });
     }
 }

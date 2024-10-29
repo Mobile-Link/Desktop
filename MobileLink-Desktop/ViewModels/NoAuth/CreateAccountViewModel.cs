@@ -6,7 +6,7 @@ using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.ViewModels.NoAuth;
 
-public class CreateAccountViewModel(NavigationService navigationService, AuthService authService, SessionService sessionService) : BaseViewModel
+public class CreateAccountViewModel(Navigation navigation, AuthService authService, Session session) : BaseViewModel
 {
     public string code = string.Empty;
     public string email = string.Empty;
@@ -60,7 +60,7 @@ public class CreateAccountViewModel(NavigationService navigationService, AuthSer
             Password = _password,
             Code = code,
             DeviceName = _deviceName
-        }).ContinueWith((taskRegister) =>
+        }).ContinueWith(async (taskRegister) =>
         {
             var result = taskRegister.Result;
             if (result?.token == null)
@@ -69,13 +69,13 @@ public class CreateAccountViewModel(NavigationService navigationService, AuthSer
                 return;
             }
 
-            sessionService.UpdateTokenAndAuthorize(result.token, result.idDevice);
+            await session.UpdateTokenAndAuthorize(result.token, result.idDevice);
             //TODO get failure or token, when token put it on storage and go to homepage 
         });
     }
 
     public void GoBack()
     {
-        navigationService.NavigateToBack();
+        navigation.NavigateToBack();
     }
 }

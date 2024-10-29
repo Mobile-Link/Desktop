@@ -13,21 +13,6 @@ namespace MobileLink_Desktop.Service.ApiServices;
 
 public class AuthService(ServerAPI api)
 {
-    public async Task<List<int>> Register()
-    {
-        var response =
-            await api.HttpClient.GetAsync(
-                "/api/Connection/connections"); //TODO send token, or somehow get the user devices only
-        var resContent = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
-        {
-            //Todo popup or return error
-            return [];
-        }
-
-        return JsonSerializer.Deserialize<List<int>>(resContent) ?? [];
-    }
-
     public async Task<HttpResponseMessage> ValidateCredentials(string emailUser, string password)
     {
         var content = new StringContent(JsonSerializer.Serialize(new

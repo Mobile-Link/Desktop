@@ -10,6 +10,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using Microsoft.AspNetCore.SignalR.Client;
 using MobileLink_Desktop.Classes;
 using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.Service.ApiServices;
@@ -26,19 +27,23 @@ public class TransferenceViewModel : BaseViewModel
     private ObservableCollection<Device> _devices = [];
     private bool _canSendFile = false;
 
-    private readonly SocketMethods _socketMethods;
     private readonly ConnectionService _connectionService;
     private readonly DeviceService _deviceService;
     private readonly TransferenceService _transferenceService;
+    private readonly HubConnection _connection;
 
-    public TransferenceViewModel(SocketMethods socketMethods, DeviceService deviceService,
-        ConnectionService connectionService, TransferenceService transferenceService)
+    public TransferenceViewModel(DeviceService deviceService,
+        ConnectionService connectionService, TransferenceService transferenceService, SocketConnection socketConnection)
     {
-        _socketMethods = socketMethods;
         _deviceService = deviceService;
         _connectionService = connectionService;
         _transferenceService = transferenceService;
-        PopulateDevices();
+        _connection = socketConnection.Connection;
+        _connection.On<int[]>("UpdateConnectedDevices", PopulateDevices);
+        _connectionService.GetConnectedDevices().ContinueWith((taskCon) =>
+        {
+            PopulateDevices(taskCon.Result.ToArray());
+        });
     }
 
     public ObservableCollection<Device> Devices
@@ -124,34 +129,38 @@ public class TransferenceViewModel : BaseViewModel
             //TODO error
             return;
         }
-        var length = new System.IO.FileInfo(_selectedFile.Path.AbsolutePath).Length;
-        _transferenceService.StartTransference(device.IdDevice, _selectedFile.Path.AbsolutePath, length, "/").ContinueWith(
-            (taskStart) =>
-            {
-                if (taskStart.Result == null)
+
+        var length = new System.IO.FileInfo(_selectedFile.Path.LocalPath).Length;
+        _transferenceService.StartTransference(device.IdDevice, _selectedFile.Path.AbsolutePath, length, "/")
+            .ContinueWith(
+                (taskStart) =>
                 {
-                    //TODO error
-                    return;
-                }
-                using (FileStream fs = File.OpenRead(_selectedFile.Path.AbsolutePath))
-                {
-                    const int chunkSize = 1024 * 1024;
-                    var totalChunks = (int)Math.Ceiling((double)fs.Length / chunkSize);
-                    
-                    long startByteIndex = 0;
-                    var chunkIndex = 0;
-                    
-                    while (startByteIndex < fs.Length)
+                    if (taskStart.Result == null)
                     {
-                        var byteArray = new byte[chunkSize];
-                        fs.Read(byteArray, 0, chunkSize);
-                        _transferenceService.SendFileChunk(taskStart.Result ?? 0, startByteIndex, byteArray).Wait();
-                        startByteIndex += chunkSize;
-                        chunkIndex++;
-                        UpdateStatusTransference((int)Math.Ceiling((double)chunkIndex / totalChunks * 100));
+                        //TODO error
+                        return;
                     }
-                }
-            });
+
+                    using (FileStream fs = File.OpenRead(_selectedFile.Path.LocalPath))
+                    {
+                        const int chunkSize = 1024 * 1024;
+                        var totalChunks = (int)Math.Ceiling((double)fs.Length / chunkSize);
+
+                        long startByteIndex = 0;
+                        var chunkIndex = 0;
+
+                        while (startByteIndex < fs.Length)
+                        {
+                            var byteArray = new byte[chunkSize];
+                            fs.Read(byteArray, 0, chunkSize);
+                            _transferenceService.SendFileChunk(taskStart.Result ?? 0, startByteIndex, byteArray).ContinueWith(
+                                (_) => { });
+                            startByteIndex += chunkSize;
+                            chunkIndex++;
+                            UpdateStatusTransference((int)Math.Ceiling((double)chunkIndex / totalChunks * 100));
+                        }
+                    }
+                });
     }
 
     public bool CanSendFile
@@ -164,21 +173,24 @@ public class TransferenceViewModel : BaseViewModel
         }
     }
 
-    private void PopulateDevices()
+    private void PopulateDevices(int[] connectedDevices)
     {
-        var userDevices = new List<Device>();
-        var connectedDevices = new List<int>();
         Devices.Clear();
-        var tasks = new List<Task>
+        var storageContent = new LocalStorage().GetStorage();
+        if (storageContent?.IdDevice == null)
         {
-            _deviceService.GetUserDevices().ContinueWith((taskUsr) =>
+            //TODO THROW error of make a handler that disponibilizes it globally to not do this each
+            return;
+        }
+
+        _deviceService.GetUserDevices().ContinueWith((taskUsr) =>
+        {
+            var devices = taskUsr.Result;
+            var userDevices = devices.Where((device) => device.IdDevice != storageContent.IdDevice).ToList();
+            if (devices.Count == userDevices.Count)
             {
-                userDevices = taskUsr.Result;
-            }),
-            _connectionService.GetConnectedDevices().ContinueWith((taskCon) => { connectedDevices = taskCon.Result; })
-        };
-        Task.WhenAll(tasks.ToArray()).ContinueWith((taskTasks) =>
-        {
+                
+            }
             Devices = new ObservableCollection<Device>(
                 userDevices.Where((device) => connectedDevices.Contains(device.IdDevice)).ToList()
             );

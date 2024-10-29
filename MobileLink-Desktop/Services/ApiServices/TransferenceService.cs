@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.Service.ApiServices;
@@ -42,5 +43,40 @@ public class TransferenceService(ServerAPI api)
             return false;
         }
         return true;
+    }
+    public async Task<Transference?> GetTransfer(int idTransfer)
+    {
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransfer?idTransfer={idTransfer}");
+        if (!response.IsSuccessStatusCode)
+        {
+            //Todo popup or return error
+            return null;
+        }
+        var body = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<Transference>(body);
+    }
+    
+    public async Task<List<TransferenceChunk>?> GetTransferChunks(int idTransfer)
+    {
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransferChunks?idTransfer={idTransfer}");
+        if (!response.IsSuccessStatusCode)
+        {
+            //Todo popup or return error
+            return null;
+        }
+        var body = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<List<TransferenceChunk>>(body);
+    }
+
+    public async Task<bool> CheckTransferChunksCompletion(int idTransfer)
+    {
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransfer?idTransfer={idTransfer}");
+        if (!response.IsSuccessStatusCode)
+        {
+            //Todo popup or return error
+            return false;
+        }
+        var body = await response.Content.ReadAsStringAsync();
+        return body == "true";
     }
 }

@@ -49,6 +49,10 @@
         <DependentUpon>Register.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Dialog\DialogLayout.axaml.cs">
+        <DependentUpon>DialogLayout.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
 
