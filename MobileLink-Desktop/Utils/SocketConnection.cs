@@ -16,9 +16,9 @@ public class SocketConnection
         _transferenceHandler = transferenceHandler;
         var storageContent = new LocalStorage().GetStorage();
         Connection = new HubConnectionBuilder()
-            .WithUrl($"http://localhost:5000/connectionhub?deviceId={storageContent?.IdDevice ?? 0}", options =>
+            .WithUrl($"http://localhost:5000/connectionhub", options =>
             {
-                options.AccessTokenProvider = () => Task.FromResult(storageContent?.Token);
+                options.AccessTokenProvider = () => Task.FromResult(storageContent?.Token);//TODO update token when connecting
             })//TODO if no storage dont start connection
             .Build();
     }

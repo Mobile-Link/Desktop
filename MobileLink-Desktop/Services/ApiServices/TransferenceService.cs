@@ -46,11 +46,7 @@ public class TransferenceService(ServerAPI api)
     }
     public async Task<Transference?> GetTransfer(int idTransfer)
     {
-        var content = new StringContent(JsonSerializer.Serialize(new
-        {
-            idTransfer
-        }), Encoding.UTF8, "application/json");
-        var response = await api.HttpClient.PostAsync("/api/Transfer/GetTransfer", content);
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransfer?idTransfer={idTransfer}");
         if (!response.IsSuccessStatusCode)
         {
             //Todo popup or return error
@@ -58,5 +54,29 @@ public class TransferenceService(ServerAPI api)
         }
         var body = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<Transference>(body);
+    }
+    
+    public async Task<List<TransferenceChunk>?> GetTransferChunks(int idTransfer)
+    {
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransferChunks?idTransfer={idTransfer}");
+        if (!response.IsSuccessStatusCode)
+        {
+            //Todo popup or return error
+            return null;
+        }
+        var body = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<List<TransferenceChunk>>(body);
+    }
+
+    public async Task<bool> CheckTransferChunksCompletion(int idTransfer)
+    {
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransfer?idTransfer={idTransfer}");
+        if (!response.IsSuccessStatusCode)
+        {
+            //Todo popup or return error
+            return false;
+        }
+        var body = await response.Content.ReadAsStringAsync();
+        return body == "true";
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -62,7 +63,7 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
                     };
                     var result = await popUpWindow.ShowDialog<string?>(App.GetMainWindow() ?? new Window());
                     localStorageContent.DefaultReceivingFolder =
-                        result ?? Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                        result ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MobileLink");
                     localStorage.SetStorage(localStorageContent);
                     VerifyLogIn(true);
                 },

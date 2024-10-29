@@ -7,10 +7,9 @@ namespace MobileLink_Desktop.Entities;
 
 public class Device
 {
-    [Key] 
     public int IdDevice { get; set; }
-    [ForeignKey("idUser")]
     public User User { get; set; }
+    public int IdUser { get; set; }
     public bool IsDeleted { get; set; }
     public string LastLocation { get; set; }
     public long AvailableSpace { get; set; }
@@ -18,6 +17,5 @@ public class Device
     public string Name { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime AlterationDate { get; set; }
-    [ForeignKey("enDeviceOS")]
-    public EnDeviceOSType EnDeviceOsType { get; set; }
+    public EnDeviceOSType EnDeviceOs { get; set; }
 }
