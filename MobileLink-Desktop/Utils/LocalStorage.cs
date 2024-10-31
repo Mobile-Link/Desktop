@@ -35,7 +35,7 @@ public class LocalStorage()
             var emptyStorage = new LocalStorageContent()
             {
                 IdDevice = null,
-                OpenWindowOnStartUp = false,
+                OpenWindowOnStartUp = true,
                 DefaultReceivingFolder = null,
                 Token = null,
                 CloseToTray = true

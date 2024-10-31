@@ -19,7 +19,7 @@ public class TransferenceService(ServerAPI api)
             filePath,
             destinationPath
         }), Encoding.UTF8, "application/json");
-        var response = await api.HttpClient.PostAsync("/api/Transfer/StartTransference", content);//TODO send token, or somehow get the user devices only
+        var response = await api.HttpClient.PostAsync("/api/Transfer/startTransference", content);//TODO send token, or somehow get the user devices only
         var resContent = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -36,7 +36,7 @@ public class TransferenceService(ServerAPI api)
             startByteIndex,
             byteArray
         }), Encoding.UTF8, "application/json");
-        var response = await api.HttpClient.PostAsync("/api/Transfer/SendFileChunk", content);
+        var response = await api.HttpClient.PostAsync("/api/Transfer/sendFileChunk", content);
         if (!response.IsSuccessStatusCode)
         {
             //Todo popup or return error
@@ -46,19 +46,20 @@ public class TransferenceService(ServerAPI api)
     }
     public async Task<Transference?> GetTransfer(int idTransfer)
     {
-        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransfer?idTransfer={idTransfer}");
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/getTransfer?idTransfer={idTransfer}");
         if (!response.IsSuccessStatusCode)
         {
             //Todo popup or return error
             return null;
         }
         var body = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<Transference>(body);
+        var deserialized = body.DeserializeFromCamelCase<Transference>();
+        return deserialized;
     }
     
     public async Task<List<TransferenceChunk>?> GetTransferChunks(int idTransfer)
     {
-        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransferChunks?idTransfer={idTransfer}");
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/getTransferChunks?idTransfer={idTransfer}");
         if (!response.IsSuccessStatusCode)
         {
             //Todo popup or return error
@@ -70,7 +71,7 @@ public class TransferenceService(ServerAPI api)
 
     public async Task<bool> CheckTransferChunksCompletion(int idTransfer)
     {
-        var response = await api.HttpClient.GetAsync($"/api/Transfer/GetTransfer?idTransfer={idTransfer}");
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/getTransfer?idTransfer={idTransfer}");
         if (!response.IsSuccessStatusCode)
         {
             //Todo popup or return error

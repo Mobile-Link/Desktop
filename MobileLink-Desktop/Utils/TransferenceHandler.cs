@@ -26,12 +26,12 @@ public class TransferenceHandler(TransferenceService transferenceService)
             return;
         }
 
-        var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), transference.IdTranference.ToString());
+        var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "MobileLink",transference.IdTransference.ToString());
         var chunkPath = Path.Combine(directory, $"{startByteIndex}.bin");
         Directory.CreateDirectory(directory);
-        await File.WriteAllBytesAsync(chunkPath, byteArray);
+        await File.WriteAllBytesAsync(chunkPath, byteArray);//TODO cannot access /usr/share
 
-        var chunks = await transferenceService.GetTransferChunks(transference.IdTranference);
+        var chunks = await transferenceService.GetTransferChunks(transference.IdTransference);
         if (chunks == null)
         {
             return;
@@ -51,7 +51,7 @@ public class TransferenceHandler(TransferenceService transferenceService)
 
     private async Task AssembleFile(Transference transference, List<TransferenceChunk> chunks)
     {
-        var sortedChunks = chunks.OrderBy((chunk) => chunk.startByteIndex);
+        var sortedChunks = chunks.OrderBy((chunk) => chunk.StartByteIndex);
         var outputFilePath = Path.Combine(GetTransferDirectory(), transference.DestinationPath);
 
         await using (var outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
@@ -72,7 +72,7 @@ public class TransferenceHandler(TransferenceService transferenceService)
     private string GetChunkPath(TransferenceChunk chunk)
     {
         var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), chunk.IdTransference.ToString());
-        return Path.Combine(directory, $"{chunk.startByteIndex}.bin");
+        return Path.Combine(directory, $"{chunk.StartByteIndex}.bin");
     }
     private bool CheckForChunkLocally(TransferenceChunk chunk)
     {

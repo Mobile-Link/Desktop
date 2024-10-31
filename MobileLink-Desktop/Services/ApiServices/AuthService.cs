@@ -76,12 +76,28 @@ public class AuthService(ServerAPI api)
     {
         var body = new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            // {
-            //     "email", email
-            // }
+            {
+                "email", email
+            }
         });
-        var response = await api.HttpClient.PostAsync($"/api/Auth/sendCode?email={email}", body);
+        var response = await api.HttpClient.PostAsync($"/api/Auth/sendCode", body);
         return await response.Content.ReadAsStringAsync();
+    }
+    
+    public async Task<bool> SendCodeNewAccount(string email)
+    {
+        var body = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            {
+                "email", email
+            }
+        });
+        var response = await api.HttpClient.PostAsync($"/api/Auth/sendCodeNewAccount", body);
+        if (!response.IsSuccessStatusCode)
+        {
+            return false;
+        }
+        return true;
     }
 
     public async Task<bool> VerifyCode(string emailOrUsername, string code)
