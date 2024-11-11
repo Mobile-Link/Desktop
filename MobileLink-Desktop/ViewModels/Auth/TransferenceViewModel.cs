@@ -29,15 +29,15 @@ public class TransferenceViewModel : BaseViewModel
 
     private readonly ConnectionService _connectionService;
     private readonly DeviceService _deviceService;
-    private readonly TransferenceService _transferenceService;
+    private readonly TransferenceHandler _transferenceHandler;
     private readonly HubConnection _connection;
 
     public TransferenceViewModel(DeviceService deviceService,
-        ConnectionService connectionService, TransferenceService transferenceService, SocketConnection socketConnection)
+        ConnectionService connectionService, TransferenceHandler transferenceHandler, SocketConnection socketConnection)
     {
         _deviceService = deviceService;
         _connectionService = connectionService;
-        _transferenceService = transferenceService;
+        _transferenceHandler = transferenceHandler;
         _connection = socketConnection.Connection;
         _connection.On<int[]>("UpdateConnectedDevices", PopulateDevices);
         _connectionService.GetConnectedDevices().ContinueWith((taskCon) =>
@@ -87,7 +87,7 @@ public class TransferenceViewModel : BaseViewModel
         }
     }
 
-    public void UpdateStatusTransference(int status)
+    public void UpdateStatusTransference(int status)//Make this a listener from the socket on the updated transfers
     {
         ProgressTransference = status;
     }
@@ -130,37 +130,8 @@ public class TransferenceViewModel : BaseViewModel
             return;
         }
 
-        var length = new System.IO.FileInfo(_selectedFile.Path.LocalPath).Length;
-        _transferenceService.StartTransference(device.IdDevice, _selectedFile.Path.AbsolutePath, length, "/")
-            .ContinueWith(
-                (taskStart) =>
-                {
-                    if (taskStart.Result == null)
-                    {
-                        //TODO error
-                        return;
-                    }
-
-                    using (FileStream fs = File.OpenRead(_selectedFile.Path.LocalPath))
-                    {
-                        const int chunkSize = 1024 * 1024;
-                        var totalChunks = (int)Math.Ceiling((double)fs.Length / chunkSize);
-
-                        long startByteIndex = 0;
-                        var chunkIndex = 0;
-
-                        while (startByteIndex < fs.Length)
-                        {
-                            var byteArray = new byte[chunkSize];
-                            fs.Read(byteArray, 0, chunkSize);
-                            _transferenceService.SendFileChunk(taskStart.Result ?? 0, startByteIndex, byteArray).ContinueWith(
-                                (_) => { });
-                            startByteIndex += chunkSize;
-                            chunkIndex++;
-                            UpdateStatusTransference((int)Math.Ceiling((double)chunkIndex / totalChunks * 100));
-                        }
-                    }
-                });
+           
+        _transferenceHandler.TransferFile(device.IdDevice, _selectedFile.Path.LocalPath, "/");
     }
 
     public bool CanSendFile
@@ -187,10 +158,6 @@ public class TransferenceViewModel : BaseViewModel
         {
             var devices = taskUsr.Result;
             var userDevices = devices.Where((device) => device.IdDevice != storageContent.IdDevice).ToList();
-            if (devices.Count == userDevices.Count)
-            {
-                
-            }
             Devices = new ObservableCollection<Device>(
                 userDevices.Where((device) => connectedDevices.Contains(device.IdDevice)).ToList()
             );

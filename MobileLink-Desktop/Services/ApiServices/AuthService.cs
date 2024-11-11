@@ -86,15 +86,10 @@ public class AuthService(ServerAPI api)
     
     public async Task<bool> SendCodeNewAccount(string email)
     {
-        var body = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            {
-                "email", email
-            }
-        });
-        var response = await api.HttpClient.PostAsync($"/api/Auth/sendCodeNewAccount", body);
+        var response = await api.HttpClient.GetAsync($"/api/Auth/sendCodeNewAccount?email={email}");
         if (!response.IsSuccessStatusCode)
         {
+            //TODO error
             return false;
         }
         return true;
