@@ -2,23 +2,54 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:MobileLink_Desktop.Templates"
         xmlns:templates="clr-namespace:MobileLink_Desktop.Templates"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:DataType="templates:PanelLoginRegisterToggle"
 >
     <Design.PreviewWith>
-        <StackPanel>
+        <Panel>
             <controls:PanelLoginRegisterToggle/>
-        </StackPanel>
+        </Panel>
     </Design.PreviewWith>
 
     <Style Selector="controls|PanelLoginRegisterToggle">
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel>
-                    <Label Content="{TemplateBinding Title}"/>
-                    <Label Content="{TemplateBinding Description}"/>
-                    <Button Command="{TemplateBinding Command}" Content="{TemplateBinding ButtonText}"></Button>
-                </StackPanel>
+				<Grid Background="#8A2BE2">
+					<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+						<TextBlock Text="{TemplateBinding Title}" FontSize="32" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
+						<TextBlock Text="{TemplateBinding Description}" FontSize="16" Foreground="White" Margin="0,0,0,10"/>
+						<Button Command="{TemplateBinding Command}" Content="{TemplateBinding ButtonText}" Background="White" Foreground="#8A2BE2"
+								Width="150" Height="40" FontSize="16"/>
+					</StackPanel>
+				</Grid>
             </ControlTemplate>
         </Setter>
     </Style>
 </Styles>
+
+<!-- 
+    <Grid Background="#8A2BE2">
+      <Panel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <TextBlock Text="{TemplateBinding Title}" FontSize="32" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
+		<TextBlock Text="{TemplateBinding Description}" FontSize="16" Foreground="White" Margin="0,0,0,10"/>
+      </Panel>
+      <Panel VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,0,0,20">
+		<Button Command="{TemplateBinding Command}" Content="{TemplateBinding ButtonText}" Background="White" Foreground="#8A2BE2"
+				Width="150" Height="40" FontSize="16"/>
+	  </Panel>
+    </Grid>
+	
+	<Grid Background="#8A2BE2">
+      <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <TextBlock Text="{TemplateBinding Title}" FontSize="32" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
+		<TextBlock Text="{TemplateBinding Description}" FontSize="16" Foreground="White" Margin="0,0,0,10"/>
+      </StackPanel>
+      <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center" Margin="0,0,0,20">
+        <Button Command="{TemplateBinding Command}" Content="{TemplateBinding ButtonText}" Background="White" Foreground="#8A2BE2"
+	            Width="150" Height="40" FontSize="16"/>
+      </StackPanel>
+    </Grid>
+	
+-->

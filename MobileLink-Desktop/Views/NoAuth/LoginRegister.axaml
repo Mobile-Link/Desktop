@@ -15,14 +15,14 @@
             <ColumnDefinition Width="{Binding WidthRegister}"></ColumnDefinition>
             <ColumnDefinition Width="{Binding WidthLogin}"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.Column="0">
+        <Panel Grid.Row="0" Grid.Column="0">
             <ContentControl Content="{Binding RegisterControl}" IsVisible="{Binding RegisterSelected}" />
             <templates:PanelLoginRegisterToggle
                 Command="{Binding ToggleSelector}"
                 IsVisible="{Binding !RegisterSelected}">
             </templates:PanelLoginRegisterToggle>
-        </StackPanel>
-        <StackPanel Grid.Row="0" Grid.Column="1">
+        </Panel>
+        <Panel Grid.Row="0" Grid.Column="1">
             <ContentControl Content="{Binding LoginControl}" IsVisible="{Binding !RegisterSelected}" />
             <templates:PanelLoginRegisterToggle
                 Title="Bem-Vindo"
@@ -31,6 +31,6 @@
                 Command="{Binding ToggleSelector}"
                 IsVisible="{Binding RegisterSelected}">
             </templates:PanelLoginRegisterToggle>
-        </StackPanel>
+        </Panel>
     </Grid>
 </UserControl>
