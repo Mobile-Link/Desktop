@@ -13,8 +13,8 @@ public enum EnStatusType
     [Description("In cloud")]
     InCloud = 3,
     
-    [Description("Verifing")]
-    Verifing = 4,
+    [Description("Verifying")]
+    Verifying = 4,
     
     [Description("Finished")]
     Finished = 5,

@@ -21,8 +21,8 @@ public static class ServiceCollectionExtensions
         
         collection.AddSingleton<Navigation>();
         collection.AddSingleton<SocketConnection>();
+        collection.AddSingleton<TransferenceHandler>();
         collection.AddTransient<Session>();
-        collection.AddTransient<TransferenceHandler>();
 
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<RegisterViewModel>();

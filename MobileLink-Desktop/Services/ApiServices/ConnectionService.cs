@@ -9,7 +9,7 @@ public class ConnectionService(ServerAPI api)
 {
     public async Task<List<int>> GetConnectedDevices()
     {
-        var response = await api.HttpClient.GetAsync("/api/Connection/GetConnectedDevices");//TODO send token, or somehow get the user devices only
+        var response = await api.HttpClient.GetAsync("/api/Connection/GetConnectedDevices");
         var resContent = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {

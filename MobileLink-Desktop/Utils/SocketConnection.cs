@@ -61,18 +61,14 @@ public class SocketConnection
             (userId, message) => { Console.WriteLine($"User {userId} : {message}"); });
         
         Connection.On<int, long, byte[]>("ReceiveFileChunk", _transferenceHandler.ReceiveFileChunk);
+        Connection.On<int>("ReSendChunk", _transferenceHandler.ReSendChunkHandler);
         Connection.On<int, string, long>("ReceiveNewTransference", ReceiveNewTransference);
-        
-        Connection.On<long>("FinalizeTransference", (idTransference =>
-        {
-            //TODO gather all chunks into a file 
-        }));
     }
 
     private void ReceiveNewTransference(int idTransfer, string filePath, long fileSize)
     {
         Console.WriteLine($"New transfer started {idTransfer}, {filePath}, {fileSize}");
-        //TODO write
+        //TODO check if this is needed
     }
     
     

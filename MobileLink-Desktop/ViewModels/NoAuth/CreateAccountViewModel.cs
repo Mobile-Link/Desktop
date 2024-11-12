@@ -70,7 +70,6 @@ public class CreateAccountViewModel(Navigation navigation, AuthService authServi
             }
 
             await session.UpdateTokenAndAuthorize(result.token, result.idDevice);
-            //TODO get failure or token, when token put it on storage and go to homepage 
         });
     }
 

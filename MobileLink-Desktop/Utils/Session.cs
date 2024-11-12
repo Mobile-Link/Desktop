@@ -15,7 +15,7 @@ using MobileLink_Desktop.Views.NoAuth;
 
 namespace MobileLink_Desktop.Service;
 
-public class Session(SocketConnection socketConnection, Navigation navigation, AuthService authService)
+public class Session(SocketConnection socketConnection, Navigation navigation, AuthService authService, TransferenceHandler transferenceHandler)
 {
     public async void VerifyLogIn(bool openWindow) //change name
     {
@@ -35,13 +35,11 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
 
         if (storageContent.OpenWindowOnStartUp || openWindow)
         {
-            var tasks = new List<Task>();
-            if (socketConnection.StatusType != EnServerconnectionStatusType.Connected)
+            
+            InitializeAuthorizedServices().ContinueWith(_ =>
             {
-                tasks.Add(socketConnection.Connect());
-            }
-
-            Task.WhenAll(tasks.ToArray()).ContinueWith((_) => { ShowInitialLayout(true); });
+                ShowInitialLayout(true);
+            });
         }
     }
 
@@ -83,5 +81,17 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
         Dispatcher.UIThread.Post(
             () => { navigation.UpdateWindow(new DialogLayout(), new Transference()); },
             DispatcherPriority.Background);
+    }
+
+    private async Task InitializeAuthorizedServices()
+    {
+        var tasks = new List<Task>();
+        if (socketConnection.StatusType != EnServerconnectionStatusType.Connected)
+        {
+            tasks.Add(socketConnection.Connect());
+        }
+        transferenceHandler.CheckTransfersNotReceived().ContinueWith((_) => {});
+        transferenceHandler.CheckTransfersNotSent().ContinueWith((_) => {});
+        await Task.WhenAll(tasks);
     }
 }

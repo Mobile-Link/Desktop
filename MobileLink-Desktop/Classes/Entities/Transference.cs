@@ -13,6 +13,7 @@ public class Transference
     public Device DeviceDestination { get; set; }
     public int IdDeviceDestination { get; set; }
     public string FilePath { get; set; }
+    public string FileNameExtension { get; set; }
     public long Size { get; set; }
     public string DestinationPath { get; set; }
     public EnStatusType EnStatus { get; set; }
