@@ -5,7 +5,7 @@ namespace MobileLink_Desktop.Entities;
 
 public class Transference
 {
-    public int IdTranference { get; set; }
+    public int IdTransference { get; set; }
     public User User { get; set; }
     public int IdUser { get; set; }
     public Device DeviceOrigin { get; set; }

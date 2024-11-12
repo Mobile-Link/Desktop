@@ -24,8 +24,13 @@ public class RegisterViewModel(AuthService authService, Navigation navigation) :
     }
     public void SubmitValidateEmail()
     {
-        authService.SendCode(_email).ContinueWith((sendTask) =>
+        authService.SendCodeNewAccount(_email).ContinueWith((sendTask) =>
         {
+            if (!sendTask.Result)
+            {
+                //TODO error
+                return;
+            }
             Dispatcher.UIThread.Post(() =>
             { 
                 navigation.NavigateTo(new EmailValidation(_email));

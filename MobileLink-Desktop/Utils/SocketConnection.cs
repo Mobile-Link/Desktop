@@ -18,8 +18,8 @@ public class SocketConnection
         Connection = new HubConnectionBuilder()
             .WithUrl($"http://localhost:5000/connectionhub", options =>
             {
-                options.AccessTokenProvider = () => Task.FromResult(storageContent?.Token);//TODO update token when connecting
-            })//TODO if no storage dont start connection
+                options.AccessTokenProvider = () => Task.FromResult(storageContent?.Token);
+            })
             .Build();
     }
 
@@ -32,6 +32,12 @@ public class SocketConnection
             return;
         }
         Console.WriteLine("Im going to connect");
+        Connection = new HubConnectionBuilder()
+            .WithUrl($"http://localhost:5000/connectionhub", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(storageContent?.Token);
+            })
+            .Build();
         await Connection.StartAsync();
         StatusType = EnServerconnectionStatusType.Connected;
         HubListener();
