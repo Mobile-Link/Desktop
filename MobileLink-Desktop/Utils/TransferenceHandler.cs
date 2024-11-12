@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.Enums;
@@ -11,6 +13,7 @@ namespace MobileLink_Desktop.Utils;
 
 public class TransferenceHandler(TransferenceService transferenceService)
 {
+    private readonly ConcurrentDictionary<int, SemaphoreSlim> _assembleFileSemaphores = new ConcurrentDictionary<int, SemaphoreSlim>();
     public async Task ReceiveFileChunk(int idTransfer, long startByteIndex, byte[] byteArray)
     {
         var localStorage = new LocalStorage();
@@ -143,6 +146,10 @@ public class TransferenceHandler(TransferenceService transferenceService)
         var directory = transference.DestinationPath == "/" ? 
             GetTransferDirectory()
             : Path.Combine(GetTransferDirectory(), transference.DestinationPath);
+        if (!Directory.Exists(directory))
+        {
+            return;
+        }
         var outputFilePath = Path.Combine(directory, transference.FileNameExtension);
         Directory.CreateDirectory(directory);
         await using (var outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
@@ -154,7 +161,8 @@ public class TransferenceHandler(TransferenceService transferenceService)
                 await chunkStream.CopyToAsync(outputStream);
             }
         }
-        //TODO call api to cleanup and update to completed
+
+        transferenceService.FinishTransfer(transference.IdTransference).ContinueWith(_ => {});
         foreach (var chunk in chunks)
         {
             File.Delete(GetChunkPathAndCreateDirectory(chunk));

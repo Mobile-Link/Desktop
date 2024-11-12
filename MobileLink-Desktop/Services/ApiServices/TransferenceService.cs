@@ -62,6 +62,21 @@ public class TransferenceService(ServerAPI api)
         return deserialized;
     }
     
+    public async Task<bool> FinishTransfer(int idTransfer)
+    {
+        var content = new StringContent(JsonSerializer.Serialize(new
+        {
+            idTransfer
+        }), Encoding.UTF8, "application/json");
+        var response = await api.HttpClient.PostAsync($"/api/Transfer/finishTransfer", content);
+        if (!response.IsSuccessStatusCode)
+        {
+            return false;
+        }
+        var body = await response.Content.ReadAsStringAsync();
+        return body == "true";
+    }
+    
     public async Task<TransferenceChunk?> GetChunkWithTransference(int idChunk)
     {
         var response = await api.HttpClient.GetAsync($"/api/Transfer/getChunkWithTransference?idChunk={idChunk}");
