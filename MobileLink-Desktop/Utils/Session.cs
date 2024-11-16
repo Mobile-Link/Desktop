@@ -66,7 +66,9 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
                     VerifyLogIn(true);
                 },
                 DispatcherPriority.Background);
+            return;
         }
+        VerifyLogIn(true);
     }
 
     private void ShowInitialLayout(bool authorized)
