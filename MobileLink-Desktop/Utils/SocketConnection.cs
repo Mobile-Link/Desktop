@@ -90,7 +90,7 @@ public class SocketConnection
                 retries--;
             }
         }
-
+        //TODO redesign function to retry from time to time or a big sleep between each
         StatusType = EnServerconnectionStatusType.CantConnect;
     }
 }

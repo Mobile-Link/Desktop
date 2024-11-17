@@ -54,6 +54,10 @@
         <DependentUpon>DialogLayout.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Dialog\SwalDialog.axaml.cs">
+        <DependentUpon>SwalDialog.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 
 

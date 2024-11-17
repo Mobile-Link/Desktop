@@ -32,6 +32,8 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<CreateAccountViewModel>();
         collection.AddTransient<LoginCreateDevice>();
         collection.AddTransient<LoginCreateDeviceViewModel>();
+        
         collection.AddTransient<SelectFolderDialogViewModel>();
+        collection.AddTransient<SwalDialogViewModel>();
     }
 }

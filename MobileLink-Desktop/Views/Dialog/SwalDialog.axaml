@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             x:Name="SelectFolderDialogWindow"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="MobileLink_Desktop.Views.Dialog.SwalDialog"
+             xmlns:dialog="clr-namespace:MobileLink_Desktop.ViewModels.Dialog"
+             x:DataType="dialog:SwalDialogViewModel">
+    <StackPanel>
+        <!-- TODO icon -->
+        <TextBlock Text="{Binding Title}" />
+        <TextBlock Text="{Binding BodyText}" />
+        <Button
+            Command="{Binding ConfirmClick}" 
+            Content="{Binding ConfirmText}" />
+        <Button
+            IsVisible="{Binding CancelButtonVisible}"
+            Command="{Binding CancelClick}"
+            Content="{Binding CancelText}" />
+    </StackPanel>
+</UserControl>

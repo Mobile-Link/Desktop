@@ -32,22 +32,27 @@ public class LocalStorage()
         catch (Exception ex)
         {
             //TODO differentiate errors
-            var emptyStorage = new LocalStorageContent()
-            {
-                IdDevice = null,
-                OpenWindowOnStartUp = true,
-                DefaultReceivingFolder = null,
-                Token = null,
-                CloseToTray = true
-            };
-            using (StreamWriter sw = File.CreateText(LocalStorageFile))
-            {
-                sw.Write(JsonSerializer.Serialize(emptyStorage));
-            }
-            return emptyStorage;
+            return WriteEmptyStorage();
         }
     }
 
+    public LocalStorageContent WriteEmptyStorage()
+    {
+        var emptyStorage = new LocalStorageContent()
+        {
+            IdDevice = null,
+            OpenWindowOnStartUp = true,
+            DefaultReceivingFolder = null,
+            Token = null,
+            CloseToTray = true
+        };
+        using (StreamWriter sw = File.CreateText(LocalStorageFile))
+        {
+            sw.Write(JsonSerializer.Serialize(emptyStorage));
+        }
+        return emptyStorage;
+    }
+    
     public void SetStorage(LocalStorageContent content)
     {
         var serializedContent = JsonSerializer.Serialize(content);
