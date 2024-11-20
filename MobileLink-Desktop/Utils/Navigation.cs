@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.ViewModels;
+using MobileLink_Desktop.ViewModels.Dialog;
 
 namespace MobileLink_Desktop.Service;
 
@@ -36,6 +39,24 @@ public class Navigation
         App.ChangeWindow(window);
         Initialize(window);
         NavigateToRoot(content);
+    }
+
+    public async Task<T> ShowDialog<T>(UserControl control, DialogViewModel<T> viewModel, Window? window = null)
+    {
+        if (window == null)
+        {
+            window = new DialogLayout();
+        }
+        var tcs = new TaskCompletionSource<T>();
+        control.DataContext = viewModel;
+        window.Content = control;
+        window.Show();
+        viewModel.CloseDialog += ((sender, e) =>
+        {
+            window.Close();
+            tcs.SetResult(e); 
+        });
+        return await tcs.Task;
     }
 
     public void NavigateToBack()

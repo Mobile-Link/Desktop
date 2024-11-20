@@ -8,16 +8,8 @@ namespace MobileLink_Desktop.Views.Dialog;
 
 public partial class SwalDialog : UserControl
 {
-    public SwalDialog(string confirmText, string title, string? bodyText, string? cancelText = null, ContentControl? bodyContent = null)
+    public SwalDialog()
     {
-        var vm = App.AppServiceProvider.GetRequiredService<SwalDialogViewModel>();
-        vm.Title = title;
-        vm.BodyText = bodyText;
-        vm.ConfirmText = confirmText;
-        vm.CancelText = cancelText;
-        vm.BodyText = bodyText;
-        vm.Result += CloseWindow;
-        DataContext = vm;
         InitializeComponent();
     }
 

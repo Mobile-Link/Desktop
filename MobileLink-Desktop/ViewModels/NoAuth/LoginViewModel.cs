@@ -41,6 +41,11 @@ public class LoginViewModel(AuthService authService, Navigation navigation, Sess
         {
             await authService.ValidateCredentials(_emailUser, _password).ContinueWith((taskVerify) =>
             {
+                if (!taskVerify.IsCompletedSuccessfully)
+                {
+                    //TODO error
+                    return;
+                }
                 if (!taskVerify.Result.IsSuccessStatusCode)
                 {
                     //TODO error

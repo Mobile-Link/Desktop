@@ -158,9 +158,11 @@ public class TransferenceViewModel : BaseViewModel
         {
             var devices = taskUsr.Result;
             var userDevices = devices.Where((device) => device.IdDevice != storageContent.IdDevice).ToList();
-            Devices = new ObservableCollection<Device>(
-                userDevices.Where((device) => connectedDevices.Contains(device.IdDevice)).ToList()
-            );
+            // Devices = new ObservableCollection<Device>(
+            //     userDevices.Where((device) => connectedDevices.Contains(device.IdDevice)).ToList()
+            // );
+            //TODO add if the device is online on the list
+            Devices = new ObservableCollection<Device>(userDevices);
         });
     }
 }

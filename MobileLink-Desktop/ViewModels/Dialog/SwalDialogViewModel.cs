@@ -4,14 +4,22 @@ using Avalonia.Platform.Storage;
 
 namespace MobileLink_Desktop.ViewModels.Dialog;
 
-public class SwalDialogViewModel: BaseViewModel
+public class SwalDialogViewModel: DialogViewModel<bool>
 {
+    public SwalDialogViewModel(string confirmText, string title, string? bodyText, string? cancelText = null,
+        ContentControl? bodyContent = null)
+    {
+        _title = title;
+        _bodyText = bodyText;
+        _confirmText = confirmText;
+        _cancelText = cancelText;
+        _bodyText = bodyText;
+    }
     private string? _cancelText { get; set; }
     private string _confirmText { get; set; }
     private string _title { get; set; }
     private string? _bodyText { get; set; }
     private ContentControl? _bodyContent { get; set; }//TODO
-    public event EventHandler<bool>? Result;
 
     public bool CancelButtonVisible { get; set; }
 
@@ -57,10 +65,10 @@ public class SwalDialogViewModel: BaseViewModel
 
     public void CancelClick()
     {
-        Result?.Invoke(this, false);
+        Close(false);
     }
     public void ConfirmClick()
     {
-        Result?.Invoke(this, true);
+        Close(true);
     }
 }

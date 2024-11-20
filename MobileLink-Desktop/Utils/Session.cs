@@ -13,6 +13,7 @@ using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.Interfaces;
 using MobileLink_Desktop.Service.ApiServices;
 using MobileLink_Desktop.Utils;
+using MobileLink_Desktop.ViewModels.Dialog;
 using MobileLink_Desktop.Views.Dialog;
 using MobileLink_Desktop.Views.NoAuth;
 using Transference = MobileLink_Desktop.Views.Auth.Transference;
@@ -54,16 +55,14 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
             {
                 Dispatcher.UIThread.Post(() =>
                 {
-                    var window = new DialogLayout();
-                    navigation.UpdateWindow(window, new SwalDialog(
+                    navigation.ShowDialog(new SwalDialog(), new SwalDialogViewModel(
                         "Ok",
                         "Este dispositivo foi excluído",
                         "Logue novamente para registrar este dispositivo."
-                    ));
-                    window.Closing += (s, e) =>
+                    )).ContinueWith((a) => //TODO GET BOOOL directly i dunno why is returning task
                     {
-                        ShowInitialLayout(false);    
-                    };
+                        ShowInitialLayout(false);
+                    });
                     storageContent.Token = null; storageContent.IdDevice = null;
                     storageContent.DefaultReceivingFolder = null;
                     localStorage.SetStorage(storageContent);
@@ -73,7 +72,7 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
 
             if (result.StatusCode == HttpStatusCode.NotAcceptable)
             {
-                navigation.UpdateWindow(new DialogLayout(), new SwalDialog(
+                navigation.ShowDialog(new SwalDialog(), new SwalDialogViewModel(
                     "Ok",
                     "Ocorreu um erro com o serviço",
                     "Por favor, tente novamente mais tarde. [E]: 406"
@@ -112,12 +111,14 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
         {
             Dispatcher.UIThread.Post(async () =>
                 {
-                    var popUpWindow = new DialogLayout()
-                    {
-                        Content = new SelectFolderDialog("Selecionar Pasta",
-                            "Selecione a pasta padrão para receber as transferências")
-                    };
-                    var result = await popUpWindow.ShowDialog<string?>(App.GetMainWindow() ?? new Window());
+                    var dialog = navigation.ShowDialog(
+                        new SelectFolderDialog(), 
+                        new SelectFolderDialogViewModel(
+                            "Selecionar Pasta", 
+                            "Selecione a pasta padrão para receber as transferências"
+                        )
+                    );
+                    var result = await dialog;
                     localStorageContent.DefaultReceivingFolder =
                         result ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MobileLink");
                     localStorage.SetStorage(localStorageContent);

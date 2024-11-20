@@ -8,13 +8,8 @@ namespace MobileLink_Desktop.Views.Dialog;
 
 public partial class SelectFolderDialog : UserControl
 {
-    public SelectFolderDialog(string buttonText, string instructionText)
+    public SelectFolderDialog()
     {
-        var vm = App.AppServiceProvider.GetRequiredService<SelectFolderDialogViewModel>();
-        vm.ButtonText = buttonText;
-        vm.InstructionText = instructionText;
-        vm.FolderSelected += CloseWindow;
-        DataContext = vm;
         InitializeComponent();
     }
 

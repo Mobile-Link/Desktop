@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -7,9 +8,9 @@ using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.Service.Interceptors;
 
-public class TokenInterceptor : DelegatingHandler
+public class RequestInterceptor : DelegatingHandler
 {
-    public TokenInterceptor()
+    public RequestInterceptor()
     {
         InnerHandler = new HttpClientHandler(); 
     }
@@ -22,6 +23,10 @@ public class TokenInterceptor : DelegatingHandler
         }
  
         var response = await base.SendAsync(request, cancellationToken);
+        if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
+        {
+            //TODO toast or popup "no internet or server down"
+        }
         return response;
     }
 }

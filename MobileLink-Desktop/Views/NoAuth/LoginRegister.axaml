@@ -10,7 +10,7 @@
     <Design.DataContext>
         <vmNoAuth:LoginRegisterViewModel />
     </Design.DataContext>
-    <Grid ShowGridLines="True">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding WidthRegister}"></ColumnDefinition>
             <ColumnDefinition Width="{Binding WidthLogin}"></ColumnDefinition>

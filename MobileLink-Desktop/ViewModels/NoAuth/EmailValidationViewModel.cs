@@ -1,5 +1,7 @@
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Collections;
 using Avalonia.Threading;
 using MobileLink_Desktop.Service;
 using MobileLink_Desktop.Service.ApiServices;
@@ -14,19 +16,19 @@ public enum SwitchNextScreen
 }
 public class EmailValidationViewModel(Navigation navigation, AuthService authService) : BaseViewModel
 {
-    private string _code = string.Empty;
+    private AvaloniaList<char> _code = new AvaloniaList<char>() { '-', '-', '-', '-', '-', '-' };//TODO this avalonia list doesnt trigger properly, I think
     public string email = string.Empty;
     public string login = string.Empty;
     public string password = string.Empty;
     public SwitchNextScreen nextScreen = SwitchNextScreen.CreateAccount;
-    
-    public string Code
+
+    public AvaloniaList<char> Code
     {
         get => _code;
         set
         {
             _code = value;
-            NotifyPropertyChanged(Code); 
+            NotifyPropertyChanged(nameof(Code)); 
         }
     }
 
@@ -46,7 +48,8 @@ public class EmailValidationViewModel(Navigation navigation, AuthService authSer
 
     private void GotoCreateAccount()
     {
-        authService.VerifyCode(email, _code).ContinueWith((verifyTask) =>
+        var formatedCode = string.Join("", _code.ToArray());
+        authService.VerifyCode(email, formatedCode).ContinueWith((verifyTask) =>
         {
             if (!verifyTask.Result)
             {
@@ -55,13 +58,14 @@ public class EmailValidationViewModel(Navigation navigation, AuthService authSer
             }
             Dispatcher.UIThread.Post(() =>
             { 
-                navigation.NavigateTo(new CreateAccount(email, _code));
+                navigation.NavigateTo(new CreateAccount(email, formatedCode));
             }, DispatcherPriority.Background);
         });
     }
     private void GotoLoginCreateDevice()
     {
-        authService.VerifyCode(login, _code).ContinueWith((verifyTask) =>
+        var formatedCode = string.Join("", _code.ToArray());
+        authService.VerifyCode(login, formatedCode).ContinueWith((verifyTask) =>
         {
             if (!verifyTask.Result)
             {
@@ -70,7 +74,7 @@ public class EmailValidationViewModel(Navigation navigation, AuthService authSer
             }
             Dispatcher.UIThread.Post(() =>
             { 
-                navigation.NavigateTo(new LoginCreateDevice(login, password, _code));
+                navigation.NavigateTo(new LoginCreateDevice(login, password, formatedCode));
             }, DispatcherPriority.Background);
         });
     }
