@@ -53,20 +53,17 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
             }
             if (new []{HttpStatusCode.Gone, HttpStatusCode.NotFound}.Contains(result.StatusCode))
             {
-                Dispatcher.UIThread.Post(() =>
+                navigation.ShowDialog(new SwalDialog(), new SwalDialogViewModel(
+                    "Ok",
+                    "Este dispositivo foi excluído",
+                    "Logue novamente para registrar este dispositivo."
+                )).ContinueWith((a) =>
                 {
-                    navigation.ShowDialog(new SwalDialog(), new SwalDialogViewModel(
-                        "Ok",
-                        "Este dispositivo foi excluído",
-                        "Logue novamente para registrar este dispositivo."
-                    )).ContinueWith((a) => //TODO GET BOOOL directly i dunno why is returning task
-                    {
-                        ShowInitialLayout(false);
-                    });
-                    storageContent.Token = null; storageContent.IdDevice = null;
-                    storageContent.DefaultReceivingFolder = null;
-                    localStorage.SetStorage(storageContent);
+                    ShowInitialLayout(false);
                 });
+                storageContent.Token = null; storageContent.IdDevice = null;
+                storageContent.DefaultReceivingFolder = null;
+                localStorage.SetStorage(storageContent);
                 return;
             }
 
@@ -76,7 +73,10 @@ public class Session(SocketConnection socketConnection, Navigation navigation, A
                     "Ok",
                     "Ocorreu um erro com o serviço",
                     "Por favor, tente novamente mais tarde. [E]: 406"
-                ));
+                )).ContinueWith(_ =>
+                {
+                    App.ShutdownApp();
+                });
                 return;
             }
         }

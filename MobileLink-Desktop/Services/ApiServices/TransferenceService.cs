@@ -64,11 +64,8 @@ public class TransferenceService(ServerAPI api)
     
     public async Task<bool> FinishTransfer(int idTransfer)
     {
-        var content = new StringContent(JsonSerializer.Serialize(new
-        {
-            idTransfer
-        }), Encoding.UTF8, "application/json");
-        var response = await api.HttpClient.PostAsync($"/api/Transfer/finishTransfer", content);
+        var content = new StringContent(JsonSerializer.Serialize(new {}), Encoding.UTF8, "application/json");
+        var response = await api.HttpClient.PostAsync($"/api/Transfer/finishTransfer?idTransfer={idTransfer}", content);
         if (!response.IsSuccessStatusCode)
         {
             return false;
@@ -140,9 +137,9 @@ public class TransferenceService(ServerAPI api)
         return body.DeserializeFromCamelCase<List<TransferenceChunk>>();
     }
     //TODO check necessity
-    public async Task<bool> CheckTransferChunksCompletion(int idTransfer)
+    public async Task<bool> FailTransfer(int idTransfer)
     {
-        var response = await api.HttpClient.GetAsync($"/api/Transfer/getTransfer?idTransfer={idTransfer}");
+        var response = await api.HttpClient.GetAsync($"/api/Transfer/failTransfer?idTransfer={idTransfer}");
         if (!response.IsSuccessStatusCode)
         {
             //Todo popup or return error
