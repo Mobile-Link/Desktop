@@ -68,6 +68,7 @@
 			<Setter Property="HorizontalAlignment" Value="Center"/>
 		</Style>
 	</UserControl.Styles>
+	
 	<Grid Background="White">
 		<Button Classes="GB" Command="{Binding GoBack}" Content="Voltar" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 		<StackPanel

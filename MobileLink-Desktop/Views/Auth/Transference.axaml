@@ -6,7 +6,33 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="auth:TransferenceViewModel"
              x:Class="MobileLink_Desktop.Views.Auth.Transference">
-    <StackPanel>
+
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#9465CF"/>
+			<!-- Cor de fundo -->
+			<Setter Property="Foreground" Value="White"/>
+			<!-- Cor do texto -->
+			<Setter Property="FontSize" Value="16"/>
+			<!-- Tamanho da fonte -->
+			<Setter Property="Padding" Value="10,5"/>
+			<!-- Espaçamento interno -->
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<!-- Espaçamento externo -->
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="FontFamily" Value="Arial"/>
+			<!-- Fonte -->
+			<Setter Property="FontSize" Value="26"/>
+			<!-- Tamanho da fonte -->
+			<Setter Property="Foreground" Value="#9465CF"/>
+			<!-- Cor do texto -->
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<!-- Espaçamento -->
+		</Style>
+	</UserControl.Styles>
+	
+	<StackPanel Background="White">
         <TextBlock Text="{Binding ProgressTransference}" Margin="0 0 0 10" HorizontalAlignment="Center"/>
 
         <ComboBox ItemsSource="{Binding Devices}" SelectedIndex="{Binding SelectedDeviceIndex}">
