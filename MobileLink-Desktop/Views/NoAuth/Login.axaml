@@ -8,13 +8,13 @@
              x:DataType="vmNoAuth:LoginViewModel"
              >
 	
-    <Grid Grid.Column="1" Margin="20">
-      <StackPanel VerticalAlignment="Center">
-        <TextBlock Text="Faça seu Login" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+    <Grid Grid.Column="1" Background="White">
+      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Text="Faça seu Login" FontSize="36" FontWeight="Bold" Foreground="#9465CF" Margin="0,0,0,20"/>
         <TextBox Watermark="Email" Text="{Binding EmailUser}" Margin="0,0,0,10"/>
         <TextBox Watermark="Senha" Text="{Binding Password}" PasswordChar="*" Margin="0,0,0,20"/>
-        <Button Command="{Binding SubmitLogin}" Content="Login" Background="#8A2BE2" Foreground="White" 
-                Width="150" Height="40" HorizontalAlignment="Left"/>
+        <Button Command="{Binding SubmitLogin}" Content="Login" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#9465CF" Foreground="White" 
+                Width="150" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <!--
 		  <Button Content="Esqueceu sua senha?" Foreground="#8A2BE2" 
                    Margin="0,10,0,0" Cursor="Hand"/>

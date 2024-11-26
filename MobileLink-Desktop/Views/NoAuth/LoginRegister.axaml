@@ -16,7 +16,7 @@
             <ColumnDefinition Width="{Binding WidthLogin}"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Panel Grid.Row="0" Grid.Column="0">
-            <ContentControl Content="{Binding RegisterControl}" IsVisible="{Binding RegisterSelected}" />
+            <ContentControl Content="{Binding RegisterControl}" IsVisible="{Binding RegisterSelected}"/>
             <templates:PanelLoginRegisterToggle
                 Command="{Binding ToggleSelector}"
                 IsVisible="{Binding !RegisterSelected}">
