@@ -11,7 +11,7 @@ using MobileLink_Desktop.Service.ApiServices;
 
 namespace MobileLink_Desktop.Utils;
 
-public class TransferenceHandler(TransferenceService transferenceService)
+public class TransferenceHandler(TransferenceService transferenceService, TransferenceTimer transferenceTimer)
 {
     private readonly ConcurrentDictionary<int, SemaphoreSlim> _assembleFileSemaphores = new ConcurrentDictionary<int, SemaphoreSlim>();
     public async Task ReceiveFileChunk(int idTransfer, long startByteIndex, byte[] byteArray)
@@ -53,10 +53,11 @@ public class TransferenceHandler(TransferenceService transferenceService)
         var allLocally = chunks.Select(CheckForChunkLocally).All(found => found);
         if (!allLocally)
         {
-            //TODO add timer
+            transferenceTimer.ChunkReceived(transference.IdTransference);
             return;
         }
         //TODO this is being called multiple times for the same transfer
+        transferenceTimer.RemoveMonitor(transference.IdTransference);
         await AssembleFile(transference, chunks);
     }
 
@@ -123,7 +124,6 @@ public class TransferenceHandler(TransferenceService transferenceService)
                 }
             }, cancellationTokenSource.Token));
         }
-        
     }
 
     private async Task GetChunksNotLocally(Transference transference)
@@ -284,5 +284,32 @@ public class TransferenceHandler(TransferenceService transferenceService)
                     }
                 }
             );
+    }
+
+    public async Task TimeoutTransference(int idTransference)
+    {
+        var transfer = await transferenceService.GetTransfer(idTransference);
+        if (transfer == null)
+        {
+            return;
+        }
+        var chunks = await transferenceService.GetTransferChunks(idTransference);
+        if (chunks == null)
+        {
+            return;
+        }
+
+        if (chunks.Any((chunk) => chunk.EnChunkStatus != EnChunkStatus.Received))
+        {
+            return;
+        }
+
+        var allLocally = chunks.Select(CheckForChunkLocally).All(found => found);
+        if (!allLocally)
+        {
+            //TODO get missing
+            return;
+        }
+        await AssembleFile(transfer, chunks);
     }
 }

@@ -13,6 +13,6 @@ public class ServerAPI
     public ServerAPI()
     {
         HttpClient = new HttpClient(new RequestInterceptor());
-        HttpClient.BaseAddress = new Uri("http://201.41.169.132");
+        HttpClient.BaseAddress = new Uri("http://localhost:5000");
     }
 }

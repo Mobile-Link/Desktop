@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<TransferenceService>();
         
         collection.AddSingleton<Navigation>();
+        collection.AddSingleton<TransferenceTimer>();
         collection.AddSingleton<SocketConnection>();
         collection.AddSingleton<TransferenceHandler>();
         collection.AddTransient<Session>();
