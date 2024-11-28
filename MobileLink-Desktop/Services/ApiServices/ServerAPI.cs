@@ -12,7 +12,7 @@ public class ServerAPI
 
     public ServerAPI()
     {
-        HttpClient = new HttpClient(new TokenInterceptor());
+        HttpClient = new HttpClient(new RequestInterceptor());
         HttpClient.BaseAddress = new Uri("http://localhost:5000");
     }
 }

@@ -5,11 +5,11 @@ namespace MobileLink_Desktop.Enums;
 public enum EnChunkStatus
 {
     [Description("Pending")]
-    Pending = 1,
+    Pending,
     
     [Description("Received")]
-    Received = 2,
+    Received,
     
     [Description("Error")]
-    Error = 3
+    Error
 }

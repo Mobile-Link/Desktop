@@ -1,15 +1,24 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using MobileLink_Desktop.Views.Dialog;
 
 namespace MobileLink_Desktop.ViewModels.Dialog;
 
-public class SelectFolderDialogViewModel: BaseViewModel
+public class SelectFolderDialogViewModel : DialogViewModel<string?>
 {
+    public SelectFolderDialogViewModel(string buttonText, string instructionText)
+    {
+        _instructionText = instructionText;
+        _buttonText = buttonText;
+        InstructionText = instructionText;
+        ButtonText = buttonText;
+    }
+    
     private string? ResultFolder { get; set; }
     private string _instructionText { get; set; }
     private string _buttonText { get; set; }
-    public event EventHandler<string?>? FolderSelected;
+
     public string InstructionText
     {
         get => _instructionText;
@@ -54,10 +63,10 @@ public class SelectFolderDialogViewModel: BaseViewModel
 
     public void Cancel()
     {
-        FolderSelected?.Invoke(this, null);
+        Close(null);
     }
     public void Confirm()
     {
-        FolderSelected?.Invoke(this, ResultFolder);
+        Close(ResultFolder);
     }
 }

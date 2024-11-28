@@ -72,6 +72,19 @@ public partial class App : Application
         desktopLifetime.MainWindow = window;
         desktopLifetime.MainWindow.Show();
     }
+
+    public static void ShutdownApp()
+    {
+        if (Current?.ApplicationLifetime is not ClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            //TODO other lifetimes
+            return;
+        }
+        Dispatcher.UIThread.Post(() =>
+        {
+            desktopLifetime.Shutdown();
+        });
+    }
     
     public static Window? GetMainWindow()
     {

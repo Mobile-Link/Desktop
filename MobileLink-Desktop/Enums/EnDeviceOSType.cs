@@ -5,17 +5,17 @@ namespace MobileLink_Desktop.Enums;
 public enum EnDeviceOSType
 {
     [Description("Linux")]
-    Linux = 1,
+    Linux,
     
     [Description("Windows")]
-    Windows = 2,
+    Windows,
     
     [Description("Android")]
-    Android = 3,
+    Android,
     
     [Description("IOS")]
-    IOS = 4,
+    IOS,
     
     [Description("MacOS")]
-    MacOS = 5,
+    MacOS,
 }

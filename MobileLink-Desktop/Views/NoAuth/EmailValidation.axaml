@@ -6,13 +6,56 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MobileLink_Desktop.Views.NoAuth.EmailValidation"
              x:DataType="vmNoAuth:EmailValidationViewModel">
-    <StackPanel
-        VerticalAlignment="Stretch"
-        HorizontalAlignment="Stretch">
-        <Button Command="{Binding GoBack}" Content="Voltar"/>
-        <TextBlock Text="Código de Verificação" TextAlignment="Center"/>
-        <TextBlock Text="Verifique seu email para colocar o código de verificação correto " TextAlignment="Center"/>
-        <TextBox Text="{Binding Code}" />
-        <Button Command="{Binding SubmitVerificationCode}" Content="Validar"/>
+    
+	 <UserControl.Styles>
+        <Style Selector="Button.Back">
+            <Setter Property="Background" Value="#9465CF"/> <!-- Cor de fundo -->
+            <Setter Property="Foreground" Value="White"/> <!-- Cor do texto -->
+            <Setter Property="FontSize" Value="16"/> <!-- Tamanho da fonte -->
+            <Setter Property="Padding" Value="10,5"/> <!-- Espaçamento interno -->
+        </Style>
+        <Style Selector="Button.Valid">
+            <Setter Property="Background" Value="#9465CF"/> <!-- Cor de fundo -->
+            <Setter Property="Foreground" Value="White"/> <!-- Cor do texto -->
+            <Setter Property="FontSize" Value="16"/> <!-- Tamanho da fonte -->
+            <Setter Property="Padding" Value="10,5"/> <!-- Espaçamento interno -->
+            <Setter Property="HorizontalAlignment" Value="Center"/> <!-- Espaçamento externo -->		    
+        </Style>
+	    <Style Selector="TextBlock.Title">
+            <Setter Property="FontFamily" Value="Arial"/> <!-- Fonte -->
+            <Setter Property="FontSize" Value="36"/> <!-- Tamanho da fonte -->
+            <Setter Property="Foreground" Value="#9465CF"/> <!-- Cor do texto -->
+    		<Setter Property="HorizontalAlignment" Value="Center"/> <!-- Espaçamento -->
+        </Style>
+        <Style Selector="TextBlock.SubTitle">
+            <Setter Property="FontFamily" Value="Arial"/> <!-- Fonte -->
+            <Setter Property="FontSize" Value="24"/> <!-- Tamanho da fonte -->
+            <Setter Property="Foreground" Value="#9465CF"/> <!-- Cor do texto -->
+            <Setter Property="HorizontalAlignment" Value="Center"/> <!-- Espaçamento -->
+	    </Style>	 
+    </UserControl.Styles>
+		
+    <StackPanel 
+		Background="White"> <!-- Background="White" -->
+        <Button Classes="Back" Command="{Binding GoBack}" Content="Voltar"/>
+        <StackPanel Margin="20">
+            <TextBlock Classes="Title" Text="Código de Verificação"/>
+            <TextBlock Classes="SubTitle" Text="Verifique seu email para colocar o código de verificação correto"/>
+
+            <Panel Margin="0,20" HorizontalAlignment="Center">
+                <TextBlock x:Name="ValidationResult" HorizontalAlignment="Center" Margin="0,10" />
+                <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
+                    <TextBox Text="{Binding Code[0]}"  MaxLength="1" Grid.Column="0" />
+                    <TextBox Text="{Binding Code[1]}"  MaxLength="1" Grid.Column="1" />
+                    <TextBox Text="{Binding Code[2]}"  MaxLength="1" Grid.Column="2" />
+                    <TextBox Text="{Binding Code[3]}"  MaxLength="1" Grid.Column="3" />
+                    <TextBox Text="{Binding Code[4]}"  MaxLength="1" Grid.Column="4" />
+                    <TextBox Text="{Binding Code[5]}"  MaxLength="1" Grid.Column="5" />
+                </Grid>
+            </Panel>
+
+            <Button  Classes="Valid" Content="Validar" Command="{Binding SubmitVerificationCode}"/>
+
+        </StackPanel>
     </StackPanel>
 </UserControl>

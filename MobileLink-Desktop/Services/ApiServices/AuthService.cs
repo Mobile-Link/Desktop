@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -7,6 +8,7 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using MobileLink_Desktop.Classes.Http.Request;
 using MobileLink_Desktop.Classes.Http.Response;
+using MobileLink_Desktop.Entities;
 using MobileLink_Desktop.Utils;
 
 namespace MobileLink_Desktop.Service.ApiServices;
@@ -23,18 +25,15 @@ public class AuthService(ServerAPI api)
         return await api.HttpClient.PostAsync("/api/Auth/validateCredentials", content);
     }
     
-    public async Task<bool> VerifyToken()
+    public async Task<HttpResponseMessage> UpdateDeviceInformation(int idDevice, long availableSpace, long occupiedSpace)
     {
-        try
+        var content = new StringContent(JsonSerializer.Serialize(new
         {
-            var result = await api.HttpClient.GetAsync("/api/Auth/verifyToken");
-            return result.IsSuccessStatusCode;
-        }
-        catch (HttpRequestException ex)
-        {
-            //TODO popup or return error
-            return false;
-        }
+            idDevice,
+            availableSpace,
+            occupiedSpace 
+        }), Encoding.UTF8, "application/json");
+        return await api.HttpClient.PostAsync("/api/Auth/updateDeviceInformation", content);
     }
 
     public async Task<RegisterResponse?> LoginCreateDevice(string emailUser, string password, string deviceName,

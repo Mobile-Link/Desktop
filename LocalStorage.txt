@@ -1,1 +1,0 @@
-{"Token":null,"DefaultReceivingFolder":null,"IdDevice":null,"OpenWindowOnStartUp":true,"CloseToTray":true}

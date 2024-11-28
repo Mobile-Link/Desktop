@@ -25,6 +25,10 @@ public class SocketConnection
 
     public async Task Connect()
     {
+        if (Connection.State == HubConnectionState.Connected)
+        {
+            return;
+        }
         var storageContent = new LocalStorage().GetStorage();
         if (storageContent?.IdDevice == null)
         {
@@ -39,6 +43,7 @@ public class SocketConnection
             })
             .Build();
         await Connection.StartAsync();
+        Console.WriteLine($"Connection: {Connection.ConnectionId}");
         StatusType = EnServerconnectionStatusType.Connected;
         HubListener();
     }
@@ -61,7 +66,7 @@ public class SocketConnection
             (userId, message) => { Console.WriteLine($"User {userId} : {message}"); });
         
         Connection.On<int, long, byte[]>("ReceiveFileChunk", _transferenceHandler.ReceiveFileChunk);
-        Connection.On<int>("ReSendChunk", _transferenceHandler.ReSendChunkHandler);
+        Connection.On<int>("ReSendChunks", _transferenceHandler.ReSendChunksHandler);
         Connection.On<int, string, long>("ReceiveNewTransference", ReceiveNewTransference);
     }
 
@@ -90,7 +95,7 @@ public class SocketConnection
                 retries--;
             }
         }
-
+        //TODO redesign function to retry from time to time or a big sleep between each
         StatusType = EnServerconnectionStatusType.CantConnect;
     }
 }

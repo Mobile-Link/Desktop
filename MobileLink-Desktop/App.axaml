@@ -16,7 +16,7 @@
     <TrayIcon.Icons>
         <TrayIcons>
             <TrayIcon 
-                Icon="/Assets/image.png" 
+                Icon="/Assets/logo.webp" 
                 ToolTipText="MobileLink"
                 Clicked="OpenWindow"          
             >

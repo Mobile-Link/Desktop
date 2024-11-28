@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<TransferenceService>();
         
         collection.AddSingleton<Navigation>();
+        collection.AddSingleton<TransferenceTimer>();
         collection.AddSingleton<SocketConnection>();
         collection.AddSingleton<TransferenceHandler>();
         collection.AddTransient<Session>();
@@ -32,6 +33,8 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<CreateAccountViewModel>();
         collection.AddTransient<LoginCreateDevice>();
         collection.AddTransient<LoginCreateDeviceViewModel>();
+        
         collection.AddTransient<SelectFolderDialogViewModel>();
+        collection.AddTransient<SwalDialogViewModel>();
     }
 }

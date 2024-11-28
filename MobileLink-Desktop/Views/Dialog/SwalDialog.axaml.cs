@@ -6,14 +6,14 @@ using MobileLink_Desktop.ViewModels.Dialog;
 
 namespace MobileLink_Desktop.Views.Dialog;
 
-public partial class SelectFolderDialog : UserControl
+public partial class SwalDialog : UserControl
 {
-    public SelectFolderDialog()
+    public SwalDialog()
     {
         InitializeComponent();
     }
 
-    private void CloseWindow(object? o, string? result)
+    private void CloseWindow(object? o, bool result)
     {
         ((Window)Parent!)?.Close(result);
     }

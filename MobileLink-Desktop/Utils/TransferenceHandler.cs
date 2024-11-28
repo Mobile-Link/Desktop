@@ -11,7 +11,7 @@ using MobileLink_Desktop.Service.ApiServices;
 
 namespace MobileLink_Desktop.Utils;
 
-public class TransferenceHandler(TransferenceService transferenceService)
+public class TransferenceHandler(TransferenceService transferenceService, TransferenceTimer transferenceTimer)
 {
     private readonly ConcurrentDictionary<int, SemaphoreSlim> _assembleFileSemaphores = new ConcurrentDictionary<int, SemaphoreSlim>();
     public async Task ReceiveFileChunk(int idTransfer, long startByteIndex, byte[] byteArray)
@@ -53,10 +53,11 @@ public class TransferenceHandler(TransferenceService transferenceService)
         var allLocally = chunks.Select(CheckForChunkLocally).All(found => found);
         if (!allLocally)
         {
-            //TODO add timer
+            transferenceTimer.ChunkReceived(transference.IdTransference);
             return;
         }
         //TODO this is being called multiple times for the same transfer
+        transferenceTimer.RemoveMonitor(transference.IdTransference);
         await AssembleFile(transference, chunks);
     }
 
@@ -97,16 +98,32 @@ public class TransferenceHandler(TransferenceService transferenceService)
         }
     }
 
-    public async Task ReSendChunkHandler(int idChunk)
+    public async Task ReSendChunksHandler(int idTransfer)
     {
-        var chunk = await transferenceService.GetChunkWithTransference(idChunk);
-        if (chunk?.Transference == null)
+        var transference = await transferenceService.GetTransfer(idTransfer);
+        if (transference == null)
         {
             return;
         }
-
-        var transfer = chunk.Transference;
-        await ReSendChunk(transfer, chunk);
+        var chunks = await transferenceService.GetTransferChunks(transference.IdTransference);
+        if (chunks == null)
+        {
+            return;
+        }
+        Console.WriteLine($"ReSendChunks transfer:{idTransfer} Chunks: {chunks.Count}");
+        var tasks = new List<Task>();
+        var cancellationTokenSource = new CancellationTokenSource();
+        foreach (var chunk in chunks.Where((chunk => chunk.EnChunkStatus != EnChunkStatus.Received)))
+        {
+            tasks.Add(ReSendChunk(transference, chunk).ContinueWith((taskReSend) =>
+            {
+                if (taskReSend.IsFaulted)
+                {
+                    cancellationTokenSource.Cancel();
+                    
+                }
+            }, cancellationTokenSource.Token));
+        }
     }
 
     private async Task GetChunksNotLocally(Transference transference)
@@ -142,14 +159,22 @@ public class TransferenceHandler(TransferenceService transferenceService)
     //TODO call this when on startup in case of finished transfer
     private async Task AssembleFile(Transference transference, List<TransferenceChunk> chunks)
     {
+        if (!_assembleFileSemaphores.TryGetValue(transference.IdTransference, out var semaphore))
+        {
+            semaphore = new SemaphoreSlim(1, 1);
+            _assembleFileSemaphores.TryAdd(transference.IdTransference, semaphore);
+        }
+        await semaphore.WaitAsync();
+
+        if (chunks.Any((chunk => !CheckForChunkLocally(chunk))))
+        {
+            return;//TODO maybe error? or check if its already finished
+        }
+        
         var sortedChunks = chunks.OrderBy((chunk) => chunk.StartByteIndex);
         var directory = transference.DestinationPath == "/" ? 
             GetTransferDirectory()
             : Path.Combine(GetTransferDirectory(), transference.DestinationPath);
-        if (!Directory.Exists(directory))
-        {
-            return;
-        }
         var outputFilePath = Path.Combine(directory, transference.FileNameExtension);
         Directory.CreateDirectory(directory);
         await using (var outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
@@ -170,6 +195,8 @@ public class TransferenceHandler(TransferenceService transferenceService)
         var chunksDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MobileLink",
             transference.IdTransference.ToString());
         Directory.Delete(chunksDirectory); //TODO test this
+        
+        semaphore.Release();
     }
 
     private string GetChunkPathAndCreateDirectory(TransferenceChunk chunk)
@@ -195,12 +222,19 @@ public class TransferenceHandler(TransferenceService transferenceService)
 
     private async Task ReSendChunk(Transference transfer, TransferenceChunk chunk)
     {
-        await using var fs = File.OpenRead(transfer.FilePath);
-        const int chunkSize = 1024 * 1024;
-        var byteArray = new byte[chunkSize];
-        fs.Read(byteArray, (int)chunk.StartByteIndex, chunkSize);
-        transferenceService.SendFileChunk(transfer.IdTransference, chunk.StartByteIndex, byteArray)
-            .ContinueWith((_) => { });
+        try
+        {
+            await using var fs = File.OpenRead(transfer.FilePath);
+            const int chunkSize = 1024 * 1024;
+            var byteArray = new byte[chunkSize];
+            fs.Read(byteArray, (int)chunk.StartByteIndex, chunkSize);
+            transferenceService.SendFileChunk(transfer.IdTransference, chunk.StartByteIndex, byteArray)
+                .ContinueWith((_) => { });
+        }
+        catch (FileNotFoundException ex)
+        {
+            //return failed task
+        }
     }
 
     public void TransferFile(int idDeviceDestination, string originalFilePath, string destinationPath)
@@ -250,5 +284,32 @@ public class TransferenceHandler(TransferenceService transferenceService)
                     }
                 }
             );
+    }
+
+    public async Task TimeoutTransference(int idTransference)
+    {
+        var transfer = await transferenceService.GetTransfer(idTransference);
+        if (transfer == null)
+        {
+            return;
+        }
+        var chunks = await transferenceService.GetTransferChunks(idTransference);
+        if (chunks == null)
+        {
+            return;
+        }
+
+        if (chunks.Any((chunk) => chunk.EnChunkStatus != EnChunkStatus.Received))
+        {
+            return;
+        }
+
+        var allLocally = chunks.Select(CheckForChunkLocally).All(found => found);
+        if (!allLocally)
+        {
+            //TODO get missing
+            return;
+        }
+        await AssembleFile(transfer, chunks);
     }
 }
